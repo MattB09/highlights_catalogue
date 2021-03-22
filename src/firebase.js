@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+require('firebase/auth');
 
 var firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_KEY,
@@ -9,7 +10,6 @@ var firebaseConfig = {
     appId: process.env.REACT_APP_FIREBASE_APP_ID,
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
   };
-  // Initialize Firebase
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-export default firebaseApp;
+  // Initialize Firebase
+  export default !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
