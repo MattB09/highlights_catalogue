@@ -72,9 +72,9 @@ export default function Home() {
             <button onClick={()=> firebase.auth().signOut()}>Sign out</button>
             <button onClick={clearFilters}>Clear Filters</button>
             <Authors authors={filteredData.Authors} filterFunc={filterByAuthor} />
-            <Books books={filteredData.Books} filterFunc={filterByBook} />
+            <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} />
             <Tags tags={filteredData.Tags} filterFunc={filterByTag}/>
-            <Highlights highlights={filteredData.Highlights} />
+            <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} tags={filteredData.Tags} />
         </div>
     )
 }
