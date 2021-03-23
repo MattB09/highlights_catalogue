@@ -1,6 +1,7 @@
 const db = require("../db/knex");
 const { request, response } = require("express");
 
+// ------- Get functions ----------
 const getTags = async(request, response) => {
     const result = await db.select('*').from("Tags").where('user_id', request.params.user_id);
     response.send(result);
@@ -32,10 +33,109 @@ const getAll = async(request, response) => {
     response.send(result);
 }
 
+// ----------- Add functions ---------------
+const addTag = async(request, response) => {
+    const newTag = {
+        tag: request.body.tag,
+        user_id: request.params.user_id
+    }
+    const added = await db('Tags').insert(newTag).returning('*')
+    response.send(added);
+}
+
+const addAuthor = async(request, response) => {
+    const newAuthor = {
+        name: request.body.author,
+        user_id: request.params.user_id
+    }
+    const added = await db('Authors').insert(newAuthor).returning('*');
+    response.send(added);
+}
+
+const addBook = async(request, response) => {
+    const newBook = {
+        title: request.body.title,
+        summary: request.body.summary,
+        year_published: request.body.year_published,
+        year_read: request.body.year_read,
+        author_id: request.body.author_id,
+        user_id: request.params.user_id
+    }
+    const added = await db('Books').insert(newBook).returning('*');
+    response.send(added);
+}
+
+// ----------- Edit functions ------------
+const editTag = async(request, response) => {
+    const result = await db('Tags').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).update({tag: request.body.tag}).returning('*');
+    response.send(result);
+}
+
+const editAuthor = async(request, response) => {
+    const result = await db('Authors').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).update({name: request.body.name}).returning('*');
+    response.send(result);
+}
+
+const editBook = async(request, response) => {
+    const editedBook = {
+        title: request.body.title,
+        summary: request.body.summary,
+        year_published: request.body.year_published,
+        year_read: request.body.year_read,
+        author_id: request.body.author_id,
+        user_id: request.params.user_id
+    }
+    const result = await db('Books').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).update(editedBook).returning('*');
+    response.send(result);
+}
+
+// ----------- Delete functions ------------
+const deleteTag = async(request, response) => {
+    const result = await db('Tags').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).del().returning('*');
+    response.send(result);
+}
+
+const deleteAuthor = async(request, response) => {
+    const result = await db('Authors').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).del().returning('*');
+    response.send(result);
+}
+
+const deleteBook = async(request, response) => {
+    const result = await db('Books').where({
+        id: request.params.id,
+        user_id: request.params.user_id
+    }).del().returning('*');
+    response.send(result);
+}
+
 module.exports = {
     getTags,
     getAuthors,
     getBooks,
     getHighlights,
-    getAll
+    getAll,
+    addTag,
+    addAuthor,
+    addBook,
+    editTag,
+    editAuthor,
+    editBook,
+    deleteTag,
+    deleteAuthor,
+    deleteBook
 }
