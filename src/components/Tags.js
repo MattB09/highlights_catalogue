@@ -1,8 +1,9 @@
 import React, {useState, useContext} from 'react'
 import { Button, Modal } from 'react-bootstrap';
 import ModalForm from './ModalForm';
-import Api from '../services/api';
+//import Api from '../services/api';
 import { AuthContext } from '../Auth';
+import axios from "axios";
 
 export default function Tags({ tags, filterFunc, setData, userData, clearFilters }) {
     const [addModalShow, setAddModalShow] = useState(false);
@@ -19,7 +20,7 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
     const deleteTag = async () => {
         // to do -- make a delete where you can delete by tag ID also
         // await Api.delete(`/api/${currentUser.uid}/highlights`)
-        let deleted = await Api.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
+        let deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
         deleted = deleted.data[0]
         let allData = { ...userData };
         allData.Tags = await allData.Tags.filter(t => t.id !== deleted.id);
@@ -39,7 +40,7 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
             alert("field must not be blank");
             return;
         }
-        let newTag = await Api.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
+        let newTag = await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
         newTag = newTag.data[0];
         let allData = { ...userData };
         allData.Tags.push(newTag);
