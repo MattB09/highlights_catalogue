@@ -1,4 +1,5 @@
 require('dotenv').config();
+const parse = require("pg-connection-string".parse);
 
 let productionConn = null;
 if (process.env.DATABASE_URL) {
