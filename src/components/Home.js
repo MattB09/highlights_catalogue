@@ -28,8 +28,8 @@ export default function Home() {
 
     function filterByTag(e) {
         const filtered = {};
-        filtered.Tags = [userData.Tags.find(t => {return t.id === e.target.value})];
-        const hIds = userData.highlights_tags.filter((row)=> row.tag_id === e.target.value)
+        filtered.Tags = [userData.Tags.find(t => {return t.id === e.currentTarget.value})];
+        const hIds = userData.highlights_tags.filter((row)=> row.tag_id === e.currentTarget.value)
             .map((row) => row.highlight_id);
         filtered.Highlights = userData.Highlights.filter((h) => hIds.includes(h.id));
         const bIds = filtered.Highlights.map((h)=> h.book_id);
@@ -40,9 +40,9 @@ export default function Home() {
     }
 
     function filterByAuthor(e) {
-        console.log(e.target.value);
+        console.log(e.currentTarget.value);
         const filtered = {};
-        filtered.Authors = [userData.Authors.find(a => a.id === e.target.value)];
+        filtered.Authors = [userData.Authors.find(a => a.id === e.currentTarget.value)];
         filtered.Books = userData.Books.filter(b => b.author_id === filtered.Authors[0].id);
         console.log('filtered books', filtered.Books);
         const bIds = filtered.Books.map(b => b.id);
@@ -56,9 +56,11 @@ export default function Home() {
 
     function filterByBook(e) {
         const filtered = {};
-        filtered.Books = [userData.Books.find(b => b.id === e.target.value)]
+        console.log("booksfilter", e.currentTarget)
+        filtered.Books = [userData.Books.find(b => b.id === e.currentTarget.value)]
+        console.log("booksfilter 2--", filtered.Books);
         filtered.Authors = [userData.Authors.find(a => a.id === filtered.Books[0].author_id)];
-        filtered.Highlights = userData.Highlights.filter(h => h.book_id === e.target.value);
+        filtered.Highlights = userData.Highlights.filter(h => h.book_id === filtered.Books[0].id);
         const hIds = filtered.Highlights.map(h => h.id);
         const tIds = userData.highlights_tags.filter(row => hIds.includes(row.highlight_id))
             .map(r => r.tag_id);
@@ -72,9 +74,9 @@ export default function Home() {
             <button onClick={()=> firebase.auth().signOut()}>Sign out</button>
             <button onClick={clearFilters}>Clear Filters</button>
             <Authors authors={filteredData.Authors} filterFunc={filterByAuthor} />
-            <Books books={filteredData.Books} filterFunc={filterByBook} />
-            <Tags tags={filteredData.Tags} filterFunc={filterByTag}/>
-            <Highlights highlights={filteredData.Highlights} />
+            <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} />
+            <Tags tags={filteredData.Tags} filterFunc={filterByTag} setData={setUserData} userData={userData} clearFilters={clearFilters} />
+            <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} tags={filteredData.Tags} />
         </div>
     )
 }
