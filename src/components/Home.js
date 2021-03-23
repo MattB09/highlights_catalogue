@@ -40,9 +40,11 @@ export default function Home() {
     }
 
     function filterByAuthor(e) {
+        console.log(e.target.value);
         const filtered = {};
         filtered.Authors = [userData.Authors.find(a => a.id === e.target.value)];
-        filtered.Books = userData.Books.filter(b => b.author_id = e.target.value);
+        filtered.Books = userData.Books.filter(b => b.author_id === filtered.Authors[0].id);
+        console.log('filtered books', filtered.Books);
         const bIds = filtered.Books.map(b => b.id);
         filtered.Highlights = userData.Highlights.filter(h => bIds.includes(h.book_id));
         const hIds = filtered.Highlights.map(h => h.id);
