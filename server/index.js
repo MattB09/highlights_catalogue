@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
 const routes = require("./routes");
+const cors = require("express-cors");
 require('dotenv').config();
 
 const app = express();
 
+app.use(cors({allowedOrigins: ['http://localhost:3000']}))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
