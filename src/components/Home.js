@@ -6,6 +6,7 @@ import Highlights from './Highlights';
 import Tags from './Tags';
 import Authors from './Authors';
 import Books from './Books';
+import axios from 'axios';
 
 export default function Home() {
     const [userData, setUserData] = useState({});
@@ -17,7 +18,7 @@ export default function Home() {
     }, [])
 
     async function loadData() {
-        const data = await Api.get(`/api/${currentUser.uid}/all`);
+        const data = await axios.get(`/api/${currentUser.uid}/all`);
         setUserData(data.data);
         setFilteredData(data.data);
     }
