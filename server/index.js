@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({allowedOrigins: ['http://localhost:3000']}))
+app.use(cors({allowedOrigins: ['http://localhost:3000', 'https://highlights-catalogue.herokuapp.com']}))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

@@ -1,7 +1,10 @@
 import axios from 'axios';
+require('dotenv').config();
+
+const PORT = process.env.PORT || 4000;
 
 const  Api = axios.create({
-    baseURL: process.env.PORT || "http://localhost:4000"
+    baseURL: process.env.PORT || `http://localhost:${PORT}`
 })
 
 export default Api;
