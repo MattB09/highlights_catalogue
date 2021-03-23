@@ -6,7 +6,6 @@ export default function Books({ books, authors, filterFunc }) {
             book.author = authors.find(auth => book.author_id === auth.id).name;
         }
     }
-    console.log(books);
 
     return (
         <div className="books">

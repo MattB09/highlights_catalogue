@@ -2,7 +2,6 @@ import React from 'react'
 
 export default function Highlights({ highlights, tags, htags }) {
     if (highlights && htags) {
-        console.log(highlights)
         for (const h of highlights) {
             h.tags = [];
             for (const htag of htags) {
@@ -13,11 +12,10 @@ export default function Highlights({ highlights, tags, htags }) {
             }
         }
     } 
-    console.log(highlights);
 
     function listTags(tagsArr) {
         let str = "Tags: ";
-        if (!tagsArr.length) return str;
+        if (!tagsArr.length) return str + "none...";
         let tArr = tagsArr.map(t => t.tag);
         str += tArr.sort().join(", ");
         return str;
