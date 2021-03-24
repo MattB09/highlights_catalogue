@@ -76,7 +76,7 @@ export default function Home() {
             <button onClick={clearFilters}>Clear Filters</button>
             <Authors authors={filteredData.Authors} filterFunc={filterByAuthor} />
             <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} />
-            <Tags tags={filteredData.Tags} filterFunc={filterByTag} setData={setUserData} userData={userData} clearFilters={clearFilters} />
+            <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
             <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} tags={filteredData.Tags} />
         </div>
     )

@@ -168,12 +168,26 @@ const deleteHighlight = async (request, response) => {
     response.send(result);
 }
 
-const deleteRelations = async (request, response) => {
+const deleteHlRelations = async (request, response) => {
     const results = [];
-    for (const tag of request.body.tags) {
+    const tIds = request.params.ids.split('-');
+    for (const tag of tIds) {
         const deletedRel = await db('highlights_tags').where({
             highlight_id: request.params.id,
             tag_id: tag
+        }).del().returning('*');
+        results.push(deletedRel[0]);
+    }
+    response.send(results);
+}
+
+const deleteTagRelations = async (request, response) => {
+    const results = [];
+    const hIds = request.params.ids.split('-');
+    for (const hl of hIds) {
+        const deletedRel = await db('highlights_tags').where({
+            highlight_id: hl,
+            tag_id: request.params.id
         }).del().returning('*');
         results.push(deletedRel[0]);
     }
@@ -199,5 +213,6 @@ module.exports = {
     deleteAuthor,
     deleteBook,
     deleteHighlight,
-    deleteRelations
+    deleteHlRelations,
+    deleteTagRelations
 }

@@ -5,7 +5,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Tags({ tags, filterFunc, setData, userData, clearFilters }) {
+export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadData }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -18,15 +18,16 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
     const handleDelHide = () => setDelModalShow(false);
 
     const deleteTag = async () => {
-        // to do -- make a delete where you can delete by tag ID also
-        // await Api.delete(`/api/${currentUser.uid}/highlights`)
+        let hIds = tagsH.filter(row => row.tag_id === selectedItem).map(row => row.highlight_id);
+        let hIdsStr = hIds.join('-');
+        if (hIds.length) await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}/highlights/${hIdsStr}`);
         let deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
         deleted = deleted.data[0]
         let allData = { ...userData };
         allData.Tags = await allData.Tags.filter(t => t.id !== deleted.id);
-        setData(allData);
+        loadData();
         handleDelHide();
-        clearFilters();
+        setSelectedItem(null)
     }
 
     const delClicked = (e) => {
