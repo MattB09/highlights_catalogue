@@ -41,11 +41,9 @@ export default function Home() {
     }
 
     function filterByAuthor(e) {
-        console.log(e.currentTarget.value);
         const filtered = {};
         filtered.Authors = [userData.Authors.find(a => a.id === e.currentTarget.value)];
         filtered.Books = userData.Books.filter(b => b.author_id === filtered.Authors[0].id);
-        console.log('filtered books', filtered.Books);
         const bIds = filtered.Books.map(b => b.id);
         filtered.Highlights = userData.Highlights.filter(h => bIds.includes(h.book_id));
         const hIds = filtered.Highlights.map(h => h.id);
@@ -57,9 +55,7 @@ export default function Home() {
 
     function filterByBook(e) {
         const filtered = {};
-        console.log("booksfilter", e.currentTarget)
         filtered.Books = [userData.Books.find(b => b.id === e.currentTarget.value)]
-        console.log("booksfilter 2--", filtered.Books);
         filtered.Authors = [userData.Authors.find(a => a.id === filtered.Books[0].author_id)];
         filtered.Highlights = userData.Highlights.filter(h => h.book_id === filtered.Books[0].id);
         const hIds = filtered.Highlights.map(h => h.id);
@@ -67,6 +63,18 @@ export default function Home() {
             .map(r => r.tag_id);
         filtered.Tags = userData.Tags.filter(t => tIds.includes(t.id));
         setFilteredData(filtered);
+    }
+
+    async function deleteHighlight(hId, userData) {
+        let tIds = userData.highlights_tags.filter(row => hId === row.highlight_id)
+        if (tIds.length) {
+            tIds = tIds.map(row => row.tag_id)
+            let tIdsString = tIds.join('-');
+            const deletedT = await axios.delete(`/api/${currentUser.uid}/highlights/${hId}/tags/${tIdsString}`);
+            console.log("deletedT", deletedT);
+        }
+        const deletedH = await axios.delete(`/api/${currentUser.uid}/highlights/${hId}`);
+        console.log("deletedH", deletedH);
     }
 
     return (
@@ -77,10 +85,12 @@ export default function Home() {
             Object.keys(userData).length && userData ? (<>
                 <button onClick={clearFilters}>Clear Filters</button>
                 <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
-                <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} setData={setUserData} userData={userData} loadData={loadData} />
+                <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} 
+                    setData={setUserData} userData={userData} loadData={loadData} deleteHighlight={deleteHighlight}/>
                 <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
                 <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} 
-                        tags={filteredData.Tags} setData={setUserData} userData={userData} loadData={loadData} />
+                    tags={filteredData.Tags} setData={setUserData} userData={userData} loadData={loadData} 
+                    deleteHighlight={deleteHighlight}/>
             </>) : <>Loading</>
             }
         </div>

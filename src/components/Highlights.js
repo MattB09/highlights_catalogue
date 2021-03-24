@@ -4,7 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Highlights({ highlights, tags, htags, setData, userData, loadData }) {
+export default function Highlights({ highlights, tags, htags, setData, userData, loadData, deleteHighlight }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,43 +16,34 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
     const handleDelShow = () => setDelModalShow(true); 
     const handleDelHide = () => setDelModalShow(false);
 
-    const deleteHighlight = async () => {
-        alert("deleted");
-        // let hIds = tagsH.filter(row => row.tag_id === selectedItem).map(row => row.highlight_id);
-        // let hIdsStr = hIds.join('-');
-        // if (hIds.length) await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}/highlights/${hIdsStr}`);
-        // await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-        // loadData();
-        // handleDelHide();
-        // setSelectedItem(null)
+    const deleteHighlightWrapper = async () => {
+        await deleteHighlight(selectedItem, userData);
+        loadData();
+        handleDelHide();
+        setSelectedItem(null)
     }
 
     const delClicked = (e) => {
         handleDelShow();
         setSelectedItem(e.target.parentElement.value);
-        alert(selectedItem);
     }
 
     const submitFunc = async (e) => {
         e.preventDefault();
-        alert("submitted");
-        // if (e.target.title.value === "") {
-        //      alert("field must not be blank");
-        //      return;
-        // }
-        // let newBook = {
-        //     title: e.target.title.value,
-        //     summary: e.target.summary.value,
-        //     year_published: e.target.year_published.value,
-        //     year_read: e.target.year_read.value,
-        //     author_id: parseInt(e.target.author.value),
-        // }
-        // let added = await axios.post(`/api/${currentUser.uid}/books`, newBook);
-        // added = added.data[0];
-        // let allData = { ...userData };
-        // allData.Books.push(added);
-        //setData(allData);
-        loadData();
+        if (e.target.highlight.value === "") {
+             alert("field must not be blank");
+             return;
+        }
+        let newHighlight = {
+            highlight: e.target.highlight.value,
+            book_id: parseInt(e.target.book.value),
+            reviewed: true,
+        }
+        let added = await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
+        added = added.data[0];
+        let allData = { ...userData };
+        allData.Highlights.push(added);
+        setData(allData);
         handleAddHide();
     }
 
@@ -75,7 +66,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
     const areYouSure = (
         <>
             <p>Are you sure you want to delete the highlight? It cannot be undone!</p>
-            <Button variant="danger" onClick={deleteHighlight} >Delete</Button>
+            <Button variant="danger" onClick={deleteHighlightWrapper} >Delete</Button>
         </>
     )
 
@@ -116,7 +107,10 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
                 {
                     highlights && highlights.map(h => {
                         return (
-                            <li key={h.id}>
+                            <li 
+                            key={h.id}
+                            value={h.id}
+                            >
                                 <Button variant="danger" onClick={delClicked}>Del</Button>
                                 <ModalForm
                                     show={delModalShow}

@@ -4,7 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Books({ books, authors, filterFunc, setData, userData, loadData }) {
+export default function Books({ books, authors, filterFunc, setData, userData, loadData, deleteHighlight }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -17,20 +17,24 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
     const handleDelHide = () => setDelModalShow(false);
 
     const deleteBook = async () => {
-        alert("deleted");
-        // let hIds = tagsH.filter(row => row.tag_id === selectedItem).map(row => row.highlight_id);
-        // let hIdsStr = hIds.join('-');
-        // if (hIds.length) await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}/highlights/${hIdsStr}`);
-        // await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-        // loadData();
-        // handleDelHide();
-        // setSelectedItem(null)
+        let hIds = userData.Highlights.filter(h => h.book_id === selectedItem)
+        if (hIds) {
+            hIds = hIds.map(h => h.id);
+            console.log("hIds", hIds);
+            for (const hId of hIds) {
+                console.log("hid", hId);
+                await deleteHighlight(hId, userData);
+            }
+        }
+        await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
+        loadData();
+        handleDelHide();
+        setSelectedItem(null)
     }
 
     const delClicked = (e) => {
         handleDelShow();
         setSelectedItem(e.target.parentElement.value);
-        alert(selectedItem);
     }
 
     const submitFunc = async (e) => {
@@ -42,9 +46,9 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
         let newBook = {
             title: e.target.title.value,
             summary: e.target.summary.value,
-            year_published: e.target.year_published.value,
-            year_read: e.target.year_read.value,
-            author_id: parseInt(e.target.author.value),
+            year_published: e.target.year_published.value || null,
+            year_read: e.target.year_read.value || null,
+            author_id: parseInt(e.target.author.value) || null,
         }
         let added = await axios.post(`/api/${currentUser.uid}/books`, newBook);
         added = added.data[0];
