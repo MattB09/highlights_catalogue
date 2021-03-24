@@ -12,7 +12,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div>
+        <div className="App">
           <PrivateRoute exact path="/" component={Home} />
           <Route exact path="/landing" component={Landing} />
           {/* <Route exact path="/signup" component={SignUp} /> */}

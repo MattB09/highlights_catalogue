@@ -63,9 +63,9 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
     )
 
     return (
-        <div className="tags">
+        <div className="tags filter-component">
             <h3>Tags ({tags && tags.length})</h3>
-            <Button variant="primary" onClick={handleShow}>
+            <Button className="add-button" variant="primary" onClick={handleShow}>
                 Add
             </Button>
             <ModalForm
@@ -83,7 +83,7 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
                                 key={t.id}
                                 value={t.id} 
                                 onClick={filterFunc}>
-                                <Button variant="danger" onClick={delClicked}>Del</Button>
+                                <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                 <ModalForm
                                     show={delModalShow}
                                     onHide={handleDelHide}

@@ -66,9 +66,9 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
     )
 
     return (
-        <div className="authors">
+        <div className="authors filter-component">
             <h3>Authors ({authors && authors.length})</h3>
-            <Button variant="primary" onClick={handleAddShow}>
+            <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add 
             </Button>
             <ModalForm
@@ -88,7 +88,7 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
                                     value={a.id}
                                     onClick={filterFunc}
                                 >
-                                    <Button variant="danger" onClick={delClicked}>Del</Button>
+                                    <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                     <ModalForm
                                         show={delModalShow}
                                         onHide={handleDelHide}
