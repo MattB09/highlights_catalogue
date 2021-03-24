@@ -61,5 +61,5 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "proxy": "localhost:4000"
+  "proxy": "http://localhost:4000"
 }

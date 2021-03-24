@@ -1,11 +1,10 @@
 import React, {useState, useContext} from 'react'
-import { Button, Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
-//import Api from '../services/api';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Tags({ tags, filterFunc, setData, userData, clearFilters }) {
+export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadData }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -18,15 +17,13 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
     const handleDelHide = () => setDelModalShow(false);
 
     const deleteTag = async () => {
-        // to do -- make a delete where you can delete by tag ID also
-        // await Api.delete(`/api/${currentUser.uid}/highlights`)
-        let deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-        deleted = deleted.data[0]
-        let allData = { ...userData };
-        allData.Tags = await allData.Tags.filter(t => t.id !== deleted.id);
-        setData(allData);
+        let hIds = tagsH.filter(row => row.tag_id === selectedItem).map(row => row.highlight_id);
+        let hIdsStr = hIds.join('-');
+        if (hIds.length) await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}/highlights/${hIdsStr}`);
+        await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
+        loadData();
         handleDelHide();
-        clearFilters();
+        setSelectedItem(null)
     }
 
     const delClicked = (e) => {
@@ -52,7 +49,7 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
         <form onSubmit={submitFunc}>
             <label>
                 Tag
-                <input name="tag" type="tag" placeholder="Tag" required />
+                <input name="tag" type="text" placeholder="Tag" required />
             </label>
             <Button variant="primary" type="submit">Save</Button>
         </form>
@@ -71,7 +68,6 @@ export default function Tags({ tags, filterFunc, setData, userData, clearFilters
             <Button variant="primary" onClick={handleShow}>
                 Add
             </Button>
-
             <ModalForm
                 show={addModalShow}
                 onHide={handleHide}

@@ -2,7 +2,7 @@ const { Router, Request, Response } = require("express");
 const { getTags, getAuthors, getBooks, getHighlights, getAll } = require("./controller");
 const { addTag, addAuthor, addBook, addHighlight, addRelations } = require("./controller");
 const { editTag, editAuthor, editBook, editHighlight } = require("./controller");
-const { deleteTag, deleteAuthor, deleteBook, deleteHighlight, deleteRelations } = require("./controller");
+const { deleteTag, deleteAuthor, deleteBook, deleteHighlight, deleteHlRelations, deleteTagRelations } = require("./controller");
 const routes = Router();
 
 // ------ get routes -------
@@ -30,7 +30,8 @@ routes.delete('/api/:user_id/tags/:id', deleteTag);
 routes.delete('/api/:user_id/authors/:id', deleteAuthor);
 routes.delete('/api/:user_id/books/:id', deleteBook);
 routes.delete('/api/:user_id/highlights/:id', deleteHighlight);
-routes.delete('/api/:user_id/highlights/:id/tags', deleteRelations);
+routes.delete('/api/:user_id/highlights/:id/tags/:ids', deleteHlRelations);
+routes.delete('/api/:user_id/tags/:id/highlights/:ids', deleteTagRelations)
 
 
 module.exports = routes;
