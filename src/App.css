@@ -2,6 +2,7 @@ body {
   background-color: #E7ECEE;
   color: #210808;
   padding: 0px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .App {
@@ -87,6 +88,9 @@ body {
   margin-right: 7px;
 }
 
+.edit-button {
+  margin-left: 7px;
+}
 .filter-component li:hover {
   cursor: pointer;
   background-color: #A4D19F;
@@ -94,4 +98,8 @@ body {
 
 .htags {
   padding-left: 50px;
+}
+
+.clear-div {
+  text-align: center;
 }
