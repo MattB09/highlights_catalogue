@@ -7,6 +7,7 @@ import Tags from './Tags';
 import Authors from './Authors';
 import Books from './Books';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 
 export default function Home() {
     const [userData, setUserData] = useState({});
@@ -78,21 +79,26 @@ export default function Home() {
     }
 
     return (
-        <div className="home">
-            <h1>Welcome {currentUser.email.split('@')[0]}</h1>
-            <button onClick={()=> firebase.auth().signOut()}>Sign out</button>
+    <>
+        <div className="headerContainer">
+            <h1 className="header">Welcome {currentUser.email.split('@')[0]}</h1>
+            <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Sign out</Button>
+        </div>
             {
             Object.keys(userData).length && userData ? (<>
                 <button onClick={clearFilters}>Clear Filters</button>
-                <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
-                <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} 
-                    setData={setUserData} userData={userData} loadData={loadData} deleteHighlight={deleteHighlight}/>
-                <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
+                <div id="filters-container">
+                    <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
+                    <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} 
+                        setData={setUserData} userData={userData} loadData={loadData} deleteHighlight={deleteHighlight}/>
+                    <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
+                </div>
                 <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} 
                     tags={filteredData.Tags} setData={setUserData} userData={userData} loadData={loadData} 
                     deleteHighlight={deleteHighlight}/>
             </>) : <>Loading</>
             }
-        </div>
+
+    </>
     )
 }

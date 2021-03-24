@@ -91,9 +91,9 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
         return str;
     }
     return (
-        <div className="highlights">
+        <div id="highlights">
             <h3>Highlights ({highlights && highlights.length})</h3>
-            <Button variant="primary" onClick={handleAddShow}>
+            <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add
             </Button>
             <ModalForm
@@ -111,7 +111,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
                             key={h.id}
                             value={h.id}
                             >
-                                <Button variant="danger" onClick={delClicked}>Del</Button>
+                                <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                 <ModalForm
                                     show={delModalShow}
                                     onHide={handleDelHide}
