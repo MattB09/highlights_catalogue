@@ -22,11 +22,9 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
             if (book.author_id === selectedItem) {
                 book.author_id = null;
                 const res = await axios.put(`/api/${currentUser.uid}/books/${book.id}`, book);
-                console.log(res);
             }
         }
         const deleted  = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-        console.log("delete", deleted);
         loadData();
         handleDelHide();
     }
@@ -34,7 +32,6 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
     const delClicked = (e) => {
         handleDelShow();
         setSelectedItem(e.target.parentElement.value);
-        console.log("selected:", selectedItem);
     }
 
     const submitFunc = async (e) => {
@@ -83,25 +80,27 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
             />
             <ul>
                 {
-                    authors && authors.map(a => {
-                        return (
-                            <li 
-                                key={a.id}
-                                value={a.id}
-                                onClick={filterFunc}
-                            >
-                                <Button variant="danger" onClick={delClicked}>Del</Button>
-                                <ModalForm
-                                    show={delModalShow}
-                                    onHide={handleDelHide}
-                                    title="Delete Author"
-                                    form={areYouSure}
-                                    size="sm"
-                                />                                
-                                {a.name}
-                            </li>
-                        );
-                    })
+                    authors ? authors.map(a => { 
+                        if (a) {
+                            return (
+                                <li 
+                                    key={a.id}
+                                    value={a.id}
+                                    onClick={filterFunc}
+                                >
+                                    <Button variant="danger" onClick={delClicked}>Del</Button>
+                                    <ModalForm
+                                        show={delModalShow}
+                                        onHide={handleDelHide}
+                                        title="Delete Author"
+                                        form={areYouSure}
+                                        size="sm"
+                                    />                                
+                                    {a.name}
+                                </li>
+                            );
+                        }
+                    }) : <>"No authors..."</>
                 }
             </ul>
         </div>
