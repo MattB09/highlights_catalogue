@@ -73,11 +73,16 @@ export default function Home() {
         <div className="home">
             <h1>Welcome {currentUser.email.split('@')[0]}</h1>
             <button onClick={()=> firebase.auth().signOut()}>Sign out</button>
-            <button onClick={clearFilters}>Clear Filters</button>
-            <Authors authors={filteredData.Authors} filterFunc={filterByAuthor} />
-            <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} />
-            <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
-            <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} tags={filteredData.Tags} />
+            {
+            Object.keys(userData).length && userData ? (<>
+                <button onClick={clearFilters}>Clear Filters</button>
+                <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
+                <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} setData={setUserData} userData={userData} loadData={loadData} />
+                <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
+                <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} 
+                        tags={filteredData.Tags} setData={setUserData} userData={userData} loadData={loadData} />
+            </>) : <>Loading</>
+            }
         </div>
     )
 }
