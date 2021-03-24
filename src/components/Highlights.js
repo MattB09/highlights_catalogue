@@ -7,6 +7,7 @@ import axios from "axios";
 export default function Highlights({ highlights, tags, htags, setData, userData, loadData, deleteHighlight }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
 
@@ -15,6 +16,9 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
 
     const handleDelShow = () => setDelModalShow(true); 
     const handleDelHide = () => setDelModalShow(false);
+
+    const handleEditShow = () => setEditModalShow(true); 
+    const handleEditHide = () => setEditModalShow(false);
 
     const deleteHighlightWrapper = async () => {
         await deleteHighlight(selectedItem, userData);
@@ -26,6 +30,11 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
     const delClicked = (e) => {
         handleDelShow();
         setSelectedItem(e.target.parentElement.value);
+    }
+
+    const editTagClicked = (e) => {
+        handleEditShow();
+        setSelectedItem(e.target.parentElement.getAttribute('data-value'))
     }
 
     const submitFunc = async (e) => {
@@ -45,6 +54,10 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
         allData.Highlights.push(added);
         setData(allData);
         handleAddHide();
+    }
+
+    const editFunc = async (e) => {
+        console.log("selected", selectedItem);
     }
 
     const highlightForm = (
@@ -70,6 +83,19 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
         </>
     )
 
+    const editTagForm = (
+        <div className="edit-tag-container">
+            <ul class="tag-list">
+                {console.log(highlights)}
+                {highlights && highlights.filter(h => h.id === selectedItem).map(h => {
+                    return (<li>{h.name}</li>)
+                })}
+            </ul>
+            <p>hello</p>
+            <Button onClick={editFunc}>do something</Button>
+        </div>
+    )
+
     // add tags to highlights
     if (highlights && htags) {
         for (const h of highlights) {
@@ -90,6 +116,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
         str += tArr.sort().join(", ");
         return str;
     }
+
     return (
         <div id="highlights">
             <h3>Highlights ({highlights && highlights.length})</h3>
@@ -120,8 +147,16 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
                                     size="sm"
                                 />
                                 {h.highlight}
-                                <div className="htags">
+                                <div className="htags" data-value={h.id}>
                                     {listTags(h.tags)}
+                                    <Button variant="primary" className="delete-button edit-button" onClick={editTagClicked}>Edit</Button>
+                                    <ModalForm
+                                        show={editModalShow}
+                                        onHide={handleEditHide}
+                                        title="Edit Tags"
+                                        form={editTagForm}
+                                        size="md"
+                                    />
                                 </div>
                             </li>
                         );

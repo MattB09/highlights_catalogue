@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../Auth';
 import firebase from '../firebase';
-import Api from '../services/api';
 import Highlights from './Highlights';
 import Tags from './Tags';
 import Authors from './Authors';
@@ -86,7 +85,9 @@ export default function Home() {
         </div>
             {
             Object.keys(userData).length && userData ? (<>
-                <button onClick={clearFilters}>Clear Filters</button>
+                <div className="clear-div">
+                    <button id="clear-button" onClick={clearFilters}>Clear Filters</button>
+                </div>
                 <div id="filters-container">
                     <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
                     <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} 
