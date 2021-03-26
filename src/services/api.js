@@ -1,10 +1,22 @@
-import axios from 'axios';
-require('dotenv').config();
+// import axios from 'axios';
+// require('dotenv').config();
 
-const PORT = process.env.PORT || 4000;
+// const PORT = process.env.PORT || 4000;
 
-const  Api = axios.create({
-    baseURL: process.env.PORT || `http://localhost:${PORT}`
-})
+// console.log("from services/api file -- this is your port, ", PORT);
 
-export default Api;
+// let baseURL;
+// if (process.env.DATABASE_URL) {
+//     baseURL = "https://highlights-catalogue.herokuapp.com/";
+// } else {
+//     baseURL = `http://localhost:${PORT}`
+// }
+
+// // consider adding some if statement that can determine whether it's production or not (like the database check)
+// // then just hardcode the base heroku url https://highlights-catalogue.herokuapp.com/
+
+// const  Api = axios.create({
+//     baseURL: baseURL
+// })
+
+// export default Api;
