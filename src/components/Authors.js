@@ -1,10 +1,10 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Authors({ authors, filterFunc, userData, setData, books, loadData }) {
+export default function Authors({ authors, setFilters, loadData, clearFilters }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,17 +16,15 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
     const handleDelShow = () => setDelModalShow(true); 
     const handleDelHide = () => setDelModalShow(false);
 
+    const setAuthFilter = (e) => {
+        setFilters({book: "", tag: "", author: e.currentTarget.value});
+    }
+
     const deleteAuthor = async () => {
-        // remove the foreign key from books
-        for (const book of books) {
-            if (book.author_id === selectedItem) {
-                book.author_id = null;
-                const res = await axios.put(`/api/${currentUser.uid}/books/${book.id}`, book);
-            }
-        }
-        const deleted  = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-        loadData();
+        await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
+        await loadData();
         handleDelHide();
+        clearFilters();
     }
 
     const delClicked = (e) => {
@@ -37,14 +35,11 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
     const submitFunc = async (e) => {
         e.preventDefault();
         if (e.target.author.value === "") {
-            alert("field must not be blank");
+            alert("Field must not be blank");
             return;
-        };
-        let newAuth = await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value})
-        newAuth = newAuth.data[0];
-        let allData = { ...userData };
-        allData.Authors.push(newAuth);
-        setData(allData);
+        } // check for duplicates..? how?
+        await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value})
+        loadData();
         handleAddHide();
     }
 
@@ -67,7 +62,7 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
 
     return (
         <div className="authors filter-component">
-            <h3>Authors ({authors && authors.length})</h3>
+            <h3>Authors ({(authors && authors.length) || 0})</h3>
             <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add 
             </Button>
@@ -86,7 +81,7 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
                                 <li 
                                     key={a.id}
                                     value={a.id}
-                                    onClick={filterFunc}
+                                    onClick={setAuthFilter}
                                 >
                                     <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                     <ModalForm
@@ -100,7 +95,8 @@ export default function Authors({ authors, filterFunc, userData, setData, books,
                                 </li>
                             );
                         }
-                    }) : <>"No authors..."</>
+                        return null;
+                    }) : null
                 }
             </ul>
         </div>

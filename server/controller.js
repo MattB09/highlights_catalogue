@@ -3,17 +3,21 @@ const { request, response } = require("express");
 
 // ------- Get functions ----------
 const getTags = async (request, response) => {
-    const result = await db.select('*').from("Tags").where('user_id', request.params.user_id);
+    const result = await db.select('*').from("Tags").where('user_id', request.params.user_id)
+        .orderBy('tag');
     response.send(result);
 }
 
 const getAuthors = async (request, response) => {
-    const result = await db.select('*').from("Authors").where('user_id', request.params.user_id);
+    const result = await db.select('*').from("Authors").where('user_id', request.params.user_id)
+        .orderBy('name');
     response.send(result);
 }
 
 const getBooks = async (request, response) => {
-    const result = await db.select('*').from("Books").where('user_id', request.params.user_id);
+    const result = await db("Books").join('Authors', "Books.author_id", "=", "Authors.id")
+        .select("Books.id", "title", "summary", "Books.user_id", "author_id", "Authors.name", "year_published", "year_read")
+        .where('Books.user_id', request.params.user_id).orderBy(['title', 'year_published']);
     response.send(result);
 }
 
@@ -49,7 +53,8 @@ const getAll = async (request, response) => {
             JOIN "highlights_tags" ON "highlights_tags".tag_id = "Tags".id
             WHERE "highlights_tags".highlight_id = "Highlights".id), '[]'::json) tags
     FROM "Highlights"
-    WHERE "Highlights".user_id = ?`, request.params.user_id);
+    WHERE "Highlights".user_id = ?
+    ORDER BY highlight`, request.params.user_id);
     response.send(result.rows);
 }
 
@@ -166,6 +171,11 @@ const deleteTag = async (request, response) => {
 }
 
 const deleteAuthor = async (request, response) => {
+    const nulledBooks = await db("Books").where({
+        author_id: request.params.id,
+        user_id: request.params.user_id 
+    }).update({author_id: null}).returning('*');
+    console.log(nulledBooks);
     const result = await db('Authors').where({
         id: request.params.id,
         user_id: request.params.user_id

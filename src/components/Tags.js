@@ -4,7 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadData }) {
+export default function Tags({ tags, setFilters, clearFilters, loadData }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,13 +16,15 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
     const handleDelShow = () => setDelModalShow(true); 
     const handleDelHide = () => setDelModalShow(false);
 
+    const setTagFilter = (e) => {
+        setFilters({author: "", tag: e.currentTarget.value, book: ""});
+    }
+
     const deleteTag = async () => {
-        let hIds = tagsH.filter(row => row.tag_id === selectedItem).map(row => row.highlight_id);
-        let hIdsStr = hIds.join('-');
-        if (hIds.length) await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}/highlights/${hIdsStr}`);
         await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-        loadData();
+        clearFilters();
         handleDelHide();
+        await loadData();
         setSelectedItem(null)
     }
 
@@ -37,11 +39,8 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
             alert("field must not be blank");
             return;
         }
-        let newTag = await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
-        newTag = newTag.data[0];
-        let allData = { ...userData };
-        allData.Tags.push(newTag);
-        setData(allData);
+        await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
+        loadData();
         handleHide();
     }
 
@@ -64,7 +63,7 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
 
     return (
         <div className="tags filter-component">
-            <h3>Tags ({tags && tags.length})</h3>
+            <h3>Tags ({(tags && tags.length) || 0})</h3>
             <Button className="add-button" variant="primary" onClick={handleShow}>
                 Add
             </Button>
@@ -82,7 +81,7 @@ export default function Tags({ tags, tagsH, filterFunc, setData, userData, loadD
                             <li 
                                 key={t.id}
                                 value={t.id} 
-                                onClick={filterFunc}>
+                                onClick={setTagFilter}>
                                 <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                 <ModalForm
                                     show={delModalShow}

@@ -4,7 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Books({ books, authors, filterFunc, setData, userData, loadData, deleteHighlight }) {
+export default function Books({ books, authors, highlights, setFilters, loadData, clearFilters }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,20 +16,21 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
     const handleDelShow = () => setDelModalShow(true); 
     const handleDelHide = () => setDelModalShow(false);
 
+    const setBookFilter = (e) => {
+        setFilters({author: "", tag:"", book: e.currentTarget.value});
+    }
+
     const deleteBook = async () => {
-        let hIds = userData.Highlights.filter(h => h.book_id === selectedItem)
-        if (hIds) {
-            hIds = hIds.map(h => h.id);
-            console.log("hIds", hIds);
-            for (const hId of hIds) {
-                console.log("hid", hId);
-                await deleteHighlight(hId, userData);
+        let relatedH = highlights.filter(h => h.book.id === selectedItem)
+        if (relatedH.length) {
+            for (const h of relatedH) {
+                await axios.delete(`/api/${currentUser.uid}/highlights/${h.id}`);
             }
         }
         await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
-        loadData();
+        await loadData();
         handleDelHide();
-        setSelectedItem(null)
+        clearFilters();
     }
 
     const delClicked = (e) => {
@@ -50,11 +51,8 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
             year_read: e.target.year_read.value || null,
             author_id: parseInt(e.target.author.value) || null,
         }
-        let added = await axios.post(`/api/${currentUser.uid}/books`, newBook);
-        added = added.data[0];
-        let allData = { ...userData };
-        allData.Books.push(added);
-        setData(allData);
+        await axios.post(`/api/${currentUser.uid}/books`, newBook);
+        loadData();
         handleAddHide();
     }
 
@@ -78,7 +76,7 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
             </label>
             <select name="author">
                 <option value="null">Select Author</option>
-				{userData.Authors && userData.Authors.map(a=> {
+				{authors && authors.map(a=> {
                     return <option value={a.id}>{a.name}</option>
                 })}
 			</select>
@@ -88,24 +86,14 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
 
     const areYouSure = (
         <>
-            <p>Deleting this book delete all of it's highlights. It cannot be undone!</p>
+            <p>Deleting this book will delete all of it's highlights. It cannot be undone!</p>
             <Button variant="danger" onClick={deleteBook} >Delete</Button>
         </>
     )
 
-
-    // add author names to booklist
-    if (books && authors) {
-        for (const book of books) {
-            if (book.author_id) {
-                book.author = authors.find(auth => book.author_id === auth.id).name;
-            }
-        }
-    }
-
     return (
         <div className="books filter-component">
-            <h3>Books ({books && books.length})</h3>
+            <h3>Books ({(books && books.length) || 0})</h3>
             <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add
             </Button>
@@ -123,7 +111,7 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
                             <li 
                                 key={b.id}
                                 value={b.id}
-                                onClick={filterFunc}>
+                                onClick={setBookFilter}>
                                 <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                 <ModalForm 
                                     show={delModalShow}
@@ -132,7 +120,7 @@ export default function Books({ books, authors, filterFunc, setData, userData, l
                                     form={areYouSure}
                                     size="sm"
                                 />
-                                <span className="book-title">{b.title}</span> by <span className="book-author">{b.author || "unspecified"}</span>
+                                <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
                             </li>
                         );
                     })

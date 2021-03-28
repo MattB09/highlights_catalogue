@@ -9,94 +9,150 @@ import axios from 'axios';
 import { Button } from 'react-bootstrap';
 
 export default function Home() {
-    const [userData, setUserData] = useState({});
+    // ---------- useStates --------------------------
+    const [highlights, setHighlights] = useState({});
+    const [filteredHighlights, setFilteredHighlights] = useState(highlights);
+    const [filters, setFilters] = useState({author: "", book: "", tag: ""});
+    const [authors, setAuthors] = useState([]);
+    const [filteredAuth, setFilteredAuth] = useState(authors);
+    const [books, setBooks] = useState([]);
+    const [filteredBooks, setFilteredBooks] = useState(books);
+    const [tags, setTags] = useState([]);
+    const [filteredTags, setFilteredTags] = useState(tags);
     const { currentUser } = useContext(AuthContext);
-    const [filteredData, setFilteredData] = useState(userData);
 
-    useEffect(() => {
+    /// ---- useEffects -------------------
+    // api calls
+    useEffect(()=> {
         loadData();
+        console.log("load data use effect")
     }, [])
 
+    // filtering
+    useEffect(() => {
+        if (authors.length) filterAuthors();
+        if (books.length) filterBooks();
+        if (tags.length) filterTags();
+        if (highlights.length) filterHighlights();
+    }, [filters, authors, books, tags, highlights]);
+
+    // changes to highlights or filter to reset filtered highlights
+    useEffect(() => {
+        console.log("highlights useEffect")
+    }, [filters, highlights]);
+
+    // ------------------ Helper functions ----------------
     async function loadData() {
+        // set highlights
         const data = await axios.get(`/api/${currentUser.uid}/all`);
-        setUserData(data.data);
-        setFilteredData(data.data);
+        setHighlights(data.data);
+        setFilteredHighlights(data.data);
+        // set authors
+        const authData = await axios.get(`api/${currentUser.uid}/authors`);
+        setAuthors(authData.data);
+        // set books
+        const bookData = await axios.get(`api/${currentUser.uid}/books`);
+        setBooks(bookData.data);
+        //set tags
+        const tagData = await axios.get(`api/${currentUser.uid}/tags`);
+        setTags(tagData.data);
     }
 
     function clearFilters() {
-        setFilteredData(userData);
+        setFilteredHighlights(highlights);
+        setFilters({author: "", book: "", tag: ""});
     }
 
-    function filterByTag(e) {
-        const filtered = {};
-        filtered.Tags = [userData.Tags.find(t => {return t.id === e.currentTarget.value})];
-        const hIds = userData.highlights_tags.filter((row)=> row.tag_id === e.currentTarget.value)
-            .map((row) => row.highlight_id);
-        filtered.Highlights = userData.Highlights.filter((h) => hIds.includes(h.id));
-        const bIds = filtered.Highlights.map((h)=> h.book_id);
-        filtered.Books = userData.Books.filter((b) => bIds.includes(b.id));
-        const authIds = filtered.Books.map((b) => b.author_id);
-        filtered.Authors = userData.Authors.filter((a) => authIds.includes(a.id));
-        setFilteredData(filtered);
-    }
-
-    function filterByAuthor(e) {
-        const filtered = {};
-        filtered.Authors = [userData.Authors.find(a => a.id === e.currentTarget.value)];
-        filtered.Books = userData.Books.filter(b => b.author_id === filtered.Authors[0].id);
-        const bIds = filtered.Books.map(b => b.id);
-        filtered.Highlights = userData.Highlights.filter(h => bIds.includes(h.book_id));
-        const hIds = filtered.Highlights.map(h => h.id);
-        const tIds = userData.highlights_tags.filter(row => hIds.includes(row.highlight_id))
-            .map(r => r.tag_id);
-        filtered.Tags = userData.Tags.filter(t => tIds.includes(t.id));
-        setFilteredData(filtered);
-    }
-
-    function filterByBook(e) {
-        const filtered = {};
-        filtered.Books = [userData.Books.find(b => b.id === e.currentTarget.value)]
-        filtered.Authors = [userData.Authors.find(a => a.id === filtered.Books[0].author_id)];
-        filtered.Highlights = userData.Highlights.filter(h => h.book_id === filtered.Books[0].id);
-        const hIds = filtered.Highlights.map(h => h.id);
-        const tIds = userData.highlights_tags.filter(row => hIds.includes(row.highlight_id))
-            .map(r => r.tag_id);
-        filtered.Tags = userData.Tags.filter(t => tIds.includes(t.id));
-        setFilteredData(filtered);
-    }
-
-    async function deleteHighlight(hId, userData) {
-        let tIds = userData.highlights_tags.filter(row => hId === row.highlight_id)
-        if (tIds.length) {
-            tIds = tIds.map(row => row.tag_id)
-            let tIdsString = tIds.join('-');
-            const deletedT = await axios.delete(`/api/${currentUser.uid}/highlights/${hId}/tags/${tIdsString}`);
-            console.log("deletedT", deletedT);
+    function filterAuthors() {
+        if (filters.author !== "") setFilteredAuth([authors.find(a => a.id === filters.author)]);
+        else if (filters.book !== "") {
+            let authId = books.find(b => b.id === filters.book).author_id;
+            setFilteredAuth([authors.find(a => a.id === authId)]);
         }
-        const deletedH = await axios.delete(`/api/${currentUser.uid}/highlights/${hId}`);
-        console.log("deletedH", deletedH);
+        else if (filters.tag !== "") {
+            let authIds = highlights.filter(h => h.tags.find(t => t.id === filters.tag))
+                .map(h => h.book.author_id);
+            if (authIds.length) setFilteredAuth([authors.find(a => authIds.includes(a.id))]);
+            else setFilteredAuth([]);
+        }
+        else setFilteredAuth(authors); 
+    }
+
+    function filterBooks() {
+        if (filters.author !== "") setFilteredBooks(books.filter(b => b.author_id === filters.author));
+        else if (filters.book !== "") {
+            setFilteredBooks([books.find(b => b.id === filters.book)]);
+        }
+        else if (filters.tag !== "") {
+            let bookIds = highlights.filter(h => h.tags.find(t => t.id === filters.tag))
+                .map(h => h.book.id);
+            if (bookIds.length) setFilteredBooks([books.find(b => bookIds.includes(b.id))]);
+            else setFilteredBooks([]);
+        }
+        else setFilteredBooks(books); 
+    }
+
+    function filterTags() { 
+        if (filters.author !== "") {
+            let hWithAuthor = highlights.reduce((acc, cur) => {
+                if (cur.book.author_id === filters.author && cur.tags.length) return acc.concat(cur.tags);
+                return acc;
+            }, []);
+            if (hWithAuthor) hWithAuthor = hWithAuthor.filter((h, ind, self) =>
+                ind === self.findIndex((hl) => (hl.id === h.id)));
+            setFilteredTags(hWithAuthor);
+        }
+        else if (filters.book !== "") {
+            let hWithBooks = highlights.reduce((acc, cur) => {
+                if (cur.book.id === filters.book && cur.tags.length) return acc.concat(cur.tags);
+                return acc;
+            }, []);
+            if (hWithBooks) hWithBooks = hWithBooks.filter((h, ind, self) =>
+                ind === self.findIndex((hl) => (hl.id === h.id)));
+            setFilteredTags(hWithBooks);
+        }
+        else if (filters.tag !== "") {
+            setFilteredTags([tags.find(t => t.id === filters.tag)]);
+        }
+        else setFilteredTags(tags); 
+    }
+
+    function filterHighlights() { 
+        if (filters.author !== "") setFilteredHighlights(highlights.filter(h => h.book.author_id === filters.author));
+        else if (filters.book !== "") setFilteredHighlights(highlights.filter(h => h.book.id === filters.book));
+        else if (filters.tag !== "") {
+            let hWithTag = highlights.filter(h => {
+                if (h.tags.find(t => t.id === filters.tag)) return true;
+                return false;
+            });
+            setFilteredHighlights(hWithTag);
+        }
+        else setFilteredHighlights(highlights); 
     }
 
     return (
     <>
         <div className="headerContainer">
-            <h1 className="header">Welcome {currentUser.email.split('@')[0]}</h1>
+            <h1 className="header">MyLights</h1>
+            <p>logged in as {currentUser.email.split('@')[0]}</p>
             <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Sign out</Button>
         </div>
             {
-            Object.keys(userData).length && userData ? (<>
+            Object.keys(highlights).length && highlights ? (<>
                 <div className="clear-div">
                     <button id="clear-button" onClick={clearFilters}>Clear Filters</button>
                 </div>
                 <div id="filters-container">
-                    <Authors authors={filteredData.Authors} books={userData.Books} filterFunc={filterByAuthor} setData={setUserData} userData={userData} loadData={loadData}/>
-                    <Books books={filteredData.Books} authors={filteredData.Authors} filterFunc={filterByBook} 
-                        setData={setUserData} userData={userData} loadData={loadData} deleteHighlight={deleteHighlight}/>
-                    <Tags tags={filteredData.Tags} tagsH={userData.highlights_tags} filterFunc={filterByTag} loadData={loadData}  setData={setUserData} userData={userData} />
+                    <Authors authors={filteredAuth} setFilters={setFilters} 
+                        loadData={loadData} clearFilters={clearFilters} />
+                    <Books books={filteredBooks} authors={authors} highlights={highlights}  
+                       setFilters={setFilters} loadData={loadData} 
+                       clearFilters={clearFilters} />
+                    <Tags tags={filteredTags}
+                        setFilters={setFilters} loadData={loadData} clearFilters={clearFilters} />
                 </div>
-                <Highlights highlights={filteredData.Highlights} htags={filteredData.highlights_tags} 
-                    tags={filteredData.Tags} setData={setUserData} userData={userData} loadData={loadData} 
-                    deleteHighlight={deleteHighlight}/>
+                <Highlights highlights={filteredHighlights} setFilters={setFilters} loadData={loadData}
+                    clearFilters={clearFilters} books={books} /> 
             </>) : <>Loading</>
             }
 
