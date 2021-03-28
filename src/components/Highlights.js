@@ -81,18 +81,18 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
         </>
     )
 
-    // const editTagForm = (
-    //     <div className="edit-tag-container">
-    //         <ul class="tag-list">
-    //             {console.log(highlights)}
-    //             {highlights && highlights.filter(h => h.id === selectedItem).map(h => {
-    //                 return (<li>{h.name}</li>)
-    //             })}
-    //         </ul>
-    //         <p>hello</p>
-    //         <Button onClick={editFunc}>do something</Button>
-    //     </div>
-    // )
+    const editTagForm = (
+        <div className="edit-tag-container">
+            <ul class="tag-list">
+                {console.log(highlights)}
+                {highlights.length && highlights.filter(h => h.id === selectedItem).map(h => {
+                    return (<li>{h.name}</li>)
+                })}
+            </ul>
+            <p>hello</p>
+            <Button onClick={editFunc}>do something</Button>
+        </div>
+    )
 
     return (
         <div id="highlights">
@@ -121,11 +121,11 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
                                     onHide={handleDelHide}
                                     title="Delete Highlight"
                                     form={areYouSure}
-                                    size="sm"
+                                    size="md"
                                 />
                                 {h.highlight}
-                                {/* <div className="htags" data-value={h.id}>
-                                    {listTags(h.tags)}
+                                <div className="htags" data-value={h.id}>
+                                    Tags: {(h.tags.length && h.tags.map(t => t.tag).join(', ')) || "none"}
                                     <Button variant="primary" className="delete-button edit-button" onClick={editTagClicked}>Edit</Button>
                                     <ModalForm
                                         show={editModalShow}
@@ -134,7 +134,7 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
                                         form={editTagForm}
                                         size="md"
                                     />
-                                </div> */}
+                                </div>
                             </li>
                         );
                     })
