@@ -4,7 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import axios from "axios";
 
-export default function Highlights({ highlights, tags, htags, setData, userData, loadData, deleteHighlight }) {
+export default function Highlights({ highlights, books, loadData, clearFilters, setFilters }) {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [editModalShow, setEditModalShow] = useState(false);
@@ -20,10 +20,10 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
     const handleEditShow = () => setEditModalShow(true); 
     const handleEditHide = () => setEditModalShow(false);
 
-    const deleteHighlightWrapper = async () => {
-        await deleteHighlight(selectedItem, userData);
-        loadData();
+    const deleteHighlight = async () => {
+        await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
         handleDelHide();
+        await loadData();
         setSelectedItem(null)
     }
 
@@ -48,16 +48,14 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
             book_id: parseInt(e.target.book.value),
             reviewed: true,
         }
-        let added = await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
-        added = added.data[0];
-        let allData = { ...userData };
-        allData.Highlights.push(added);
-        setData(allData);
+        await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
+        await loadData();
         handleAddHide();
     }
 
     const editFunc = async (e) => {
         console.log("selected", selectedItem);
+        handleEditHide();
     }
 
     const highlightForm = (
@@ -68,7 +66,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
             </label>
             <select name="book">
                 <option value="null">Select Book</option>
-				{userData.Books && userData.Books.map(b=> {
+				{books && books.map(b=> {
                     return <option value={b.id}>{b.title}</option>
                 })}
 			</select>
@@ -79,47 +77,26 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
     const areYouSure = (
         <>
             <p>Are you sure you want to delete the highlight? It cannot be undone!</p>
-            <Button variant="danger" onClick={deleteHighlightWrapper} >Delete</Button>
+            <Button variant="danger" onClick={deleteHighlight} >Delete</Button>
         </>
     )
 
-    const editTagForm = (
-        <div className="edit-tag-container">
-            <ul class="tag-list">
-                {console.log(highlights)}
-                {highlights && highlights.filter(h => h.id === selectedItem).map(h => {
-                    return (<li>{h.name}</li>)
-                })}
-            </ul>
-            <p>hello</p>
-            <Button onClick={editFunc}>do something</Button>
-        </div>
-    )
-
-    // add tags to highlights
-    if (highlights && htags) {
-        for (const h of highlights) {
-            h.tags = [];
-            for (const htag of htags) {
-                if (htag.highlight_id === h.id) h.tags.push({id: htag.tag_id});
-            }
-            for (const t of h.tags) {
-                t.tag = tags.find(tag => tag.id === t.id).tag;
-            }
-        }
-    } 
-
-    function listTags(tagsArr) {
-        let str = "Tags: ";
-        if (!tagsArr.length) return str + "none...";
-        let tArr = tagsArr.map(t => t.tag);
-        str += tArr.sort().join(", ");
-        return str;
-    }
+    // const editTagForm = (
+    //     <div className="edit-tag-container">
+    //         <ul class="tag-list">
+    //             {console.log(highlights)}
+    //             {highlights && highlights.filter(h => h.id === selectedItem).map(h => {
+    //                 return (<li>{h.name}</li>)
+    //             })}
+    //         </ul>
+    //         <p>hello</p>
+    //         <Button onClick={editFunc}>do something</Button>
+    //     </div>
+    // )
 
     return (
         <div id="highlights">
-            <h3>Highlights ({highlights && highlights.length})</h3>
+            <h3>Highlights ({(highlights && highlights.length) || 0})</h3>
             <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add
             </Button>
@@ -132,7 +109,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
             />
             <ul>
                 {
-                    highlights && highlights.map(h => {
+                    (highlights && highlights.length) && highlights.map(h => {
                         return (
                             <li 
                             key={h.id}
@@ -147,7 +124,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
                                     size="sm"
                                 />
                                 {h.highlight}
-                                <div className="htags" data-value={h.id}>
+                                {/* <div className="htags" data-value={h.id}>
                                     {listTags(h.tags)}
                                     <Button variant="primary" className="delete-button edit-button" onClick={editTagClicked}>Edit</Button>
                                     <ModalForm
@@ -157,7 +134,7 @@ export default function Highlights({ highlights, tags, htags, setData, userData,
                                         form={editTagForm}
                                         size="md"
                                     />
-                                </div>
+                                </div> */}
                             </li>
                         );
                     })
