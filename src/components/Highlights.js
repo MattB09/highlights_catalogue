@@ -21,9 +21,9 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
     const handleEditHide = () => setEditModalShow(false);
 
     const deleteHighlight = async () => {
-        // await deleteHighlight(selectedItem, userData);
-        // loadData();
+        await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
         handleDelHide();
+        await loadData();
         setSelectedItem(null)
     }
 
@@ -39,25 +39,23 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
 
     const submitFunc = async (e) => {
         e.preventDefault();
-        // if (e.target.highlight.value === "") {
-        //      alert("field must not be blank");
-        //      return;
-        // }
-        // let newHighlight = {
-        //     highlight: e.target.highlight.value,
-        //     book_id: parseInt(e.target.book.value),
-        //     reviewed: true,
-        // }
-        // let added = await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
-        // added = added.data[0];
-        // let allData = { ...userData };
-        // allData.Highlights.push(added);
-        // setData(allData);
+        if (e.target.highlight.value === "") {
+             alert("field must not be blank");
+             return;
+        }
+        let newHighlight = {
+            highlight: e.target.highlight.value,
+            book_id: parseInt(e.target.book.value),
+            reviewed: true,
+        }
+        await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
+        await loadData();
         handleAddHide();
     }
 
     const editFunc = async (e) => {
         console.log("selected", selectedItem);
+        handleEditHide();
     }
 
     const highlightForm = (

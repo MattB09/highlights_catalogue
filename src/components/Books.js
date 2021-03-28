@@ -28,9 +28,10 @@ export default function Books({ books, authors, highlights, setFilters, loadData
             }
         }
         await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
-        await loadData();
-        handleDelHide();
         clearFilters();
+        handleDelHide();
+        await loadData();
+        setSelectedItem(null);
     }
 
     const delClicked = (e) => {

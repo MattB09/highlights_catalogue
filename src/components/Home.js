@@ -66,8 +66,13 @@ export default function Home() {
     function filterAuthors() {
         if (filters.author !== "") setFilteredAuth([authors.find(a => a.id === filters.author)]);
         else if (filters.book !== "") {
-            let authId = books.find(b => b.id === filters.book).author_id;
-            setFilteredAuth([authors.find(a => a.id === authId)]);
+            let authId = books.find(b => b.id === filters.book);
+            if (authId) {
+                authId = authId.author_id;
+                setFilteredAuth([authors.find(a => a.id === authId)]);
+            }
+            else setFilteredAuth([]);
+
         }
         else if (filters.tag !== "") {
             let authIds = highlights.filter(h => h.tags.find(t => t.id === filters.tag))

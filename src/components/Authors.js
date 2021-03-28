@@ -22,9 +22,11 @@ export default function Authors({ authors, setFilters, loadData, clearFilters })
 
     const deleteAuthor = async () => {
         await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-        await loadData();
-        handleDelHide();
         clearFilters();
+        handleDelHide();
+        await loadData();
+        setSelectedItem(null);
+
     }
 
     const delClicked = (e) => {
