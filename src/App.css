@@ -57,7 +57,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding: 15px;
+  padding: 10px 25px;
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
 }
 
@@ -102,4 +102,9 @@ body {
 
 .clear-div {
   text-align: center;
+}
+
+.logo {
+  width: 100px;
+  object-fit: cover;
 }

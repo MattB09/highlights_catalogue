@@ -7,6 +7,7 @@ import Authors from './Authors';
 import Books from './Books';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
+import logo from '../img/ML - Logo.png';
 
 export default function Home() {
     // ---------- useStates --------------------------
@@ -138,7 +139,7 @@ export default function Home() {
     return (
     <>
         <div className="headerContainer">
-            <h1 className="header">MyLights</h1>
+            <img className="header logo" src={logo} alt="MyLights logo" />
             <p>logged in as {currentUser.email.split('@')[0]}</p>
             <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Sign out</Button>
         </div>
