@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# MyLights
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+MyLights is a web app that lets users manage their highlights and notes from different books they've read. You can categorize each highlight with 0 or many tags and then filter the highlights based on author, book, or tag. You can create any tag you like.
 
-## Available Scripts
+Users each have their own account.
 
-In the project directory, you can run:
+## How to use the app (for users)
 
-### `yarn start`
+Visit the url: https://highlights-catalogue.herokuapp.com/ and sign up with email and password. Start adding your authors, books, tags, and highlights!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How to download the app (for developers)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. clone the repo and npm install
+2. create a local postgres database (for local testing)
+3. Create a .env file
+    i. Define your .env variables DB_USER, DB_PW, DB_NAME.
+    ii. Make sure .env is in .gitignore
+4. Run knex migrate:latest to create the database schema and knex seed:run <filename> for each file in the seed folder. (This will also need to be done for the production version. i.e. if using Heroku, run the same commands in the Heroku command line)
+5. Use npm run dev to run the backend server in hot-reload mode.
+6. Use npm run hack to start the front end server in hot-reload mode.
+7. Hack away!
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technology used
 
-### `yarn build`
+* Postgres Database
+* Knex for database migrations, seeding, connections
+* NodeJS and express server for backend
+* React front end
+* Firebase for login
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Database schema 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![Database Schema](/img/SchemaDiagram.PNG)

@@ -13,7 +13,7 @@ export default function Home() {
     // ---------- useStates --------------------------
     const [highlights, setHighlights] = useState({});
     const [filteredHighlights, setFilteredHighlights] = useState(highlights);
-    const [filters, setFilters] = useState({author: "", book: "", tag: ""});
+    const [filters, setFilters] = useState({author: "", book: "", tag: "", highlight: ""});
     const [authors, setAuthors] = useState([]);
     const [filteredAuth, setFilteredAuth] = useState(authors);
     const [books, setBooks] = useState([]);
@@ -61,7 +61,7 @@ export default function Home() {
 
     function clearFilters() {
         setFilteredHighlights(highlights);
-        setFilters({author: "", book: "", tag: ""});
+        setFilters({author: "", book: "", tag: "", highlight: ""});
     }
 
     function filterAuthors() {
@@ -124,7 +124,8 @@ export default function Home() {
     }
 
     function filterHighlights() { 
-        if (filters.author !== "") setFilteredHighlights(highlights.filter(h => h.book.author_id === filters.author));
+        if (filters.highlight !== "") setFilteredHighlights(highlights.filter(h => h.id === filters.highlight))
+        else if (filters.author !== "") setFilteredHighlights(highlights.filter(h => h.book.author_id === filters.author));
         else if (filters.book !== "") setFilteredHighlights(highlights.filter(h => h.book.id === filters.book));
         else if (filters.tag !== "") {
             let hWithTag = highlights.filter(h => {
@@ -134,6 +135,7 @@ export default function Home() {
             setFilteredHighlights(hWithTag);
         }
         else setFilteredHighlights(highlights); 
+
     }
 
     return (
