@@ -19,10 +19,6 @@ export default function Home() {
 		loadData();
 	}, []);
 
-	useEffect(() => {
-		console.log(state);
-	}, [state])
-
 	async function loadData() {
 		const data = await axios.get(`/api/${currentUser.uid}/all`);
 		dispatch({type: 'setContext', payload: data.data})

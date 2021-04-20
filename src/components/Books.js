@@ -22,7 +22,7 @@ export default function Books() {
     useEffect(() => {
         if (state.data === undefined) return;
         setBooks(filterBooks(state.data));
-    }, [state.filters, state.data.books]);
+    }, [state]);
 
     const setBookFilter = (e) => {
         dispatch({type: 'setFilter', payload: {author: "", tag:"", book: e.currentTarget.value}});

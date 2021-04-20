@@ -26,7 +26,7 @@ export default function Highlights() {
     useEffect(() => {
         if (state.data === undefined) return;
         setHighlights(filterHighlights(state.data))
-    }, [state.filters, state.data.highlights])
+    }, [state])
 
 
     function filterHighlights(data) { 

@@ -6,15 +6,12 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Authors() {
-    // const [addModalShow, setAddModalShow] = useState(false);
+    const [addModalShow, setAddModalShow] = useState(false);
     // const [delModalShow, setDelModalShow] = useState(false);
     // const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
     const [authors, setAuthors] = useState([]);
-
-    // const handleAddShow = () => setAddModalShow(true); 
-    // const handleAddHide = () => setAddModalShow(false);
 
     // const handleDelShow = () => setDelModalShow(true); 
     // const handleDelHide = () => setDelModalShow(false);
@@ -22,7 +19,7 @@ export default function Authors() {
     useEffect(() => {
         if (state.data === undefined) return;
         setAuthors(filterAuthors(state.data));
-    }, [state.filters, state.data.authors]);
+    }, [state]);
 
     function filterAuthors(data) {
         if (state.filters.author !== "") return [data.authors.find(a => a.id === state.filters.author)];
@@ -58,26 +55,27 @@ export default function Authors() {
     //     setSelectedItem(e.target.parentElement.value);
     // }
 
-    // const submitFunc = async (e) => {
-    //     e.preventDefault();
-    //     if (e.target.author.value === "") {
-    //         alert("Field must not be blank");
-    //         return;
-    //     } // check for duplicates..? how?
-    //     await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value})
-    //     loadData();
-    //     handleAddHide();
-    // }
+    const submitFunc = async (e) => {
+        e.preventDefault();
+        if (e.target.author.value === "") {
+            alert("Field must not be blank");
+            return;
+        } // check for duplicates..? how?
+        const addedAuth = await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value});
+        console.log("console.log:", addedAuth.data)
+        dispatch({type: 'addAuthor', payload: addedAuth.data[0]});
+        setAddModalShow(false);
+    }
 
-    // const authForm = (
-    //     <form onSubmit={submitFunc}>
-    //     <label>
-    //         Author
-    //         <input name="author" type="text" placeholder="Author's name" required />
-    //     </label>
-    //     <Button variant="primary" type="submit">Save</Button>
-    // </form>    
-    // )
+    const authForm = (
+        <form onSubmit={submitFunc}>
+        <label>
+            Author
+            <input name="author" type="text" placeholder="Author's name" required />
+        </label>
+        <Button variant="primary" type="submit">Save</Button>
+    </form>    
+    )
 
     // const areYouSure = (
     //     <>
@@ -89,16 +87,16 @@ export default function Authors() {
     return (
         <div className="authors filter-component">
             <h3>Authors ({(authors.length) || 0})</h3>
-            {/* <Button className="add-button" variant="primary" onClick={handleAddShow}>
+            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add 
             </Button>
             <ModalForm
                 show={addModalShow}
-                onHide={handleAddHide}
+                onHide={() => setAddModalShow(false)}
                 title="Add Author"
                 form={authForm}
                 size="md"
-            /> */}
+            />
             <ul>
                 {
                 authors.length > 0 && authors.map(a => { 

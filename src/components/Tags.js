@@ -22,7 +22,7 @@ export default function Tags() {
     useEffect(() => {
         if (state.data === undefined) return;
         setTags(filterTags(state.data));
-    }, [state.filters, state.data.tags]);
+    }, [state]);
 
     const setTagFilter = (e) => {
         dispatch({type: 'setFilter', payload: {author: "", tag: e.currentTarget.value, book: ""}});

@@ -14,9 +14,9 @@ const reducer = (state, action) => {
     case 'setContext':
       return { ...state, data: action.payload };
     case 'addAuthor':
-      let authors = {...state.authors};
+      let authors = [...state.data.authors];
       authors.push(action.payload);
-      return { ...state, authors }
+      return { filters: state.filters, data: { ...state.data, authors}}
     case 'clearFilters':
       return {...state, filters: {author: "", book: "", tag: ""}}
     case 'setFilter':
