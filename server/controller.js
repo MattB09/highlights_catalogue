@@ -27,7 +27,8 @@ const getHighlights = async (request, response) => {
 }
 
 const getAll = async (request, response) => {
-    const result = await db.raw(`SELECT
+    // all highlights
+    const highlightsQ = await db.raw(`SELECT
         "Highlights".id,
         highlight,
         reviewed,
@@ -55,7 +56,28 @@ const getAll = async (request, response) => {
     FROM "Highlights"
     WHERE "Highlights".user_id = ?
     ORDER BY highlight`, request.params.user_id);
-    response.send(result.rows);
+
+    // tags
+    const tags = await db.select('*').from("Tags").where('user_id', request.params.user_id)
+        .orderBy('tag');
+
+    // authors
+    const authors = await db.select('*').from("Authors").where('user_id', request.params.user_id)
+    .orderBy('name');
+
+    // books
+    const books = await db("Books").join('Authors', "Books.author_id", "=", "Authors.id")
+    .select("Books.id", "title", "summary", "Books.user_id", "author_id", "Authors.name", "year_published", "year_read")
+    .where('Books.user_id', request.params.user_id).orderBy(['title', 'year_published']);
+
+    const result = {
+        highlights: highlightsQ.rows,
+        tags,
+        authors,
+        books
+    }
+
+    response.send(result);
 }
 
 // ----------- Add functions ---------------

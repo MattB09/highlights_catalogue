@@ -2,70 +2,72 @@ import React, {useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
+import { Context } from '../App';
 import axios from "axios";
 
-export default function Authors({ authors, setFilters, loadData, clearFilters }) {
-    const [addModalShow, setAddModalShow] = useState(false);
-    const [delModalShow, setDelModalShow] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+export default function Authors() {
+    // const [addModalShow, setAddModalShow] = useState(false);
+    // const [delModalShow, setDelModalShow] = useState(false);
+    // const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context);
 
-    const handleAddShow = () => setAddModalShow(true); 
-    const handleAddHide = () => setAddModalShow(false);
+    // const handleAddShow = () => setAddModalShow(true); 
+    // const handleAddHide = () => setAddModalShow(false);
 
-    const handleDelShow = () => setDelModalShow(true); 
-    const handleDelHide = () => setDelModalShow(false);
+    // const handleDelShow = () => setDelModalShow(true); 
+    // const handleDelHide = () => setDelModalShow(false);
 
     const setAuthFilter = (e) => {
-        setFilters({book: "", tag: "", author: e.currentTarget.value});
+        dispatch({type: 'setFilter', payload: {book: "", tag: "", author: e.currentTarget.value}});
     }
 
-    const deleteAuthor = async () => {
-        await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-        clearFilters();
-        handleDelHide();
-        await loadData();
-        setSelectedItem(null);
+    // const deleteAuthor = async () => {
+    //     await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
+    //     clearFilters();
+    //     handleDelHide();
+    //     await loadData();
+    //     setSelectedItem(null);
 
-    }
+    // }
 
-    const delClicked = (e) => {
-        handleDelShow();
-        setSelectedItem(e.target.parentElement.value);
-    }
+    // const delClicked = (e) => {
+    //     handleDelShow();
+    //     setSelectedItem(e.target.parentElement.value);
+    // }
 
-    const submitFunc = async (e) => {
-        e.preventDefault();
-        if (e.target.author.value === "") {
-            alert("Field must not be blank");
-            return;
-        } // check for duplicates..? how?
-        await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value})
-        loadData();
-        handleAddHide();
-    }
+    // const submitFunc = async (e) => {
+    //     e.preventDefault();
+    //     if (e.target.author.value === "") {
+    //         alert("Field must not be blank");
+    //         return;
+    //     } // check for duplicates..? how?
+    //     await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value})
+    //     loadData();
+    //     handleAddHide();
+    // }
 
-    const authForm = (
-        <form onSubmit={submitFunc}>
-        <label>
-            Author
-            <input name="author" type="text" placeholder="Author's name" required />
-        </label>
-        <Button variant="primary" type="submit">Save</Button>
-    </form>    
-    )
+    // const authForm = (
+    //     <form onSubmit={submitFunc}>
+    //     <label>
+    //         Author
+    //         <input name="author" type="text" placeholder="Author's name" required />
+    //     </label>
+    //     <Button variant="primary" type="submit">Save</Button>
+    // </form>    
+    // )
 
-    const areYouSure = (
-        <>
-            <p>Deleting this author will leave the author's books authorless!.</p>
-            <Button variant="danger" onClick={deleteAuthor} >Delete</Button>
-        </>
-    )
+    // const areYouSure = (
+    //     <>
+    //         <p>Deleting this author will leave the author's books authorless!.</p>
+    //         <Button variant="danger" onClick={deleteAuthor} >Delete</Button>
+    //     </>
+    // )
 
     return (
         <div className="authors filter-component">
-            <h3>Authors ({(authors && authors.length) || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={handleAddShow}>
+            <h3>Authors ({(state.data !== undefined && state.data.authors.length) || 0})</h3>
+            {/* <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add 
             </Button>
             <ModalForm
@@ -74,10 +76,10 @@ export default function Authors({ authors, setFilters, loadData, clearFilters })
                 title="Add Author"
                 form={authForm}
                 size="md"
-            />
+            /> */}
             <ul>
                 {
-                    authors ? authors.map(a => { 
+                    state.data !== undefined && state.data.authors.length ? state.data.authors.map(a => { 
                         if (a) {
                             return (
                                 <li 
@@ -85,14 +87,14 @@ export default function Authors({ authors, setFilters, loadData, clearFilters })
                                     value={a.id}
                                     onClick={setAuthFilter}
                                 >
-                                    <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
+                                    {/* <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
                                     <ModalForm
                                         show={delModalShow}
                                         onHide={handleDelHide}
                                         title="Delete Author"
                                         form={areYouSure}
                                         size="sm"
-                                    />                                
+                                    />                                 */}
                                     {a.name}
                                 </li>
                             );
