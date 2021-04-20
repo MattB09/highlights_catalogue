@@ -1,4 +1,4 @@
-import React, {useState, useContext } from 'react'
+import React, {useState, useContext, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
@@ -11,12 +11,34 @@ export default function Authors() {
     // const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
+    const [authors, setAuthors] = useState([]);
 
     // const handleAddShow = () => setAddModalShow(true); 
     // const handleAddHide = () => setAddModalShow(false);
 
     // const handleDelShow = () => setDelModalShow(true); 
     // const handleDelHide = () => setDelModalShow(false);
+
+    useEffect(() => {
+        if (state.data === undefined) return;
+        setAuthors(filterAuthors(state.data));
+    }, [state.filters, state.data.authors]);
+
+    function filterAuthors(data) {
+        if (state.filters.author !== "") return [data.authors.find(a => a.id === state.filters.author)];
+        if (state.filters.book !== "") {
+            let authId = data.books.find(b => b.id === state.filters.book);
+            if (authId) return [data.authors.find(a => a.id === authId.author_id)];
+            return [];
+        }
+        if (state.filters.tag !== "") {
+            let authIds = data.highlights.filter(h => h.tags.find(t => t.id === state.filters.tag))
+                .map(h => h.book.author_id);
+            if (authIds.length) return [data.authors.find(a => authIds.includes(a.id))];
+            return [];
+        }
+        return data.authors; 
+    }
 
     const setAuthFilter = (e) => {
         dispatch({type: 'setFilter', payload: {book: "", tag: "", author: e.currentTarget.value}});
@@ -66,7 +88,7 @@ export default function Authors() {
 
     return (
         <div className="authors filter-component">
-            <h3>Authors ({(state.data !== undefined && state.data.authors.length) || 0})</h3>
+            <h3>Authors ({(authors.length) || 0})</h3>
             {/* <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add 
             </Button>
@@ -79,7 +101,7 @@ export default function Authors() {
             /> */}
             <ul>
                 {
-                    state.data !== undefined && state.data.authors.length ? state.data.authors.map(a => { 
+                authors.length > 0 && authors.map(a => { 
                         if (a) {
                             return (
                                 <li 
@@ -100,7 +122,7 @@ export default function Authors() {
                             );
                         }
                         return null;
-                    }) : null
+                    })
                 }
             </ul>
         </div>

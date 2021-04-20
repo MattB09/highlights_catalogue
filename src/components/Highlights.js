@@ -1,17 +1,19 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
 
-export default function Highlights({ highlights, books, loadData, clearFilters, setFilters }) {
+export default function Highlights() {
+    const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context)
+    const [highlights, setHighlights] = useState([]);
     // const [addModalShow, setAddModalShow] = useState(false);
     // const [delModalShow, setDelModalShow] = useState(false);
     // const [editModalShow, setEditModalShow] = useState(false);
     // const [selectedItem, setSelectedItem] = useState(null);
-    // const { currentUser } = useContext(AuthContext);
+
 
     // const handleAddShow = () => setAddModalShow(true); 
     // const handleAddHide = () => setAddModalShow(false);
@@ -21,6 +23,24 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
 
     // const handleEditShow = () => setEditModalShow(true); 
     // const handleEditHide = () => setEditModalShow(false);
+    useEffect(() => {
+        if (state.data === undefined) return;
+        setHighlights(filterHighlights(state.data))
+    }, [state.filters, state.data.highlights])
+
+
+    function filterHighlights(data) { 
+        if (state.filters.author !== "") return data.highlights.filter(h => h.book.author_id === state.filters.author);
+        if (state.filters.book !== "") return data.highlights.filter(h => h.book.id === state.filters.book);
+        if (state.filters.tag !== "") {
+            let hWithTag = data.highlights.filter(h => {
+                if (h.tags.find(t => t.id === state.filters.tag)) return true;
+                return false;
+            });
+            return hWithTag;
+        }
+        return data.highlights; 
+    }
 
     // const deleteHighlight = async () => {
     //     await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
@@ -98,7 +118,7 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
 
     return (
         <div id="highlights">
-            <h3>Highlights ({(state.data !== undefined && state.data.highlights.length) || 0})</h3>
+            <h3>Highlights ({highlights.length || 0})</h3>
             {/* <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add
             </Button>
@@ -111,7 +131,7 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
             /> */}
             <ul>
                 {
-                    (state.data !== undefined && Object.keys(state.data.highlights).length) && state.data.highlights.map(h => {
+                    highlights.length > 0 && highlights.map(h => {
                         return (
                             <li 
                             key={h.id}

@@ -1,16 +1,17 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
 
-export default function Books({ books, authors, highlights, setFilters, loadData, clearFilters }) {
+export default function Books() {
     // const [addModalShow, setAddModalShow] = useState(false);
     // const [delModalShow, setDelModalShow] = useState(false);
     // const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
+    const [ books, setBooks ] = useState([]);
 
     // const handleAddShow = () => setAddModalShow(true); 
     // const handleAddHide = () => setAddModalShow(false);
@@ -18,8 +19,25 @@ export default function Books({ books, authors, highlights, setFilters, loadData
     // const handleDelShow = () => setDelModalShow(true); 
     // const handleDelHide = () => setDelModalShow(false);
 
+    useEffect(() => {
+        if (state.data === undefined) return;
+        setBooks(filterBooks(state.data));
+    }, [state.filters, state.data.books]);
+
     const setBookFilter = (e) => {
         dispatch({type: 'setFilter', payload: {author: "", tag:"", book: e.currentTarget.value}});
+    }
+
+    function filterBooks(data) {
+        if (state.filters.author !== "") return data.books.filter(b => b.author_id === state.filters.author);
+        if (state.filters.book !== "") return [data.books.find(b => b.id === state.filters.book)];
+        if (state.filters.tag !== "") {
+            let bookIds = data.highlights.filter(h => h.tags.find(t => t.id === state.filters.tag))
+                .map(h => h.book.id);
+            if (bookIds.length) return [data.books.find(b => bookIds.includes(b.id))];
+            else return [];
+        }
+        return data.books; 
     }
 
     // const deleteBook = async () => {
@@ -96,7 +114,7 @@ export default function Books({ books, authors, highlights, setFilters, loadData
 
     return (
         <div className="books filter-component">
-            <h3>Books ({(state.data !== undefined && state.data.books.length) || 0})</h3>
+            <h3>Books ({books.length || 0})</h3>
             {/* <Button className="add-button" variant="primary" onClick={handleAddShow}>
                 Add
             </Button>
@@ -109,8 +127,7 @@ export default function Books({ books, authors, highlights, setFilters, loadData
             /> */}
             <ul>
                 {
-                    state.data !== undefined && state.data.books.length 
-                    ? state.data.books.map(b => {
+                    books.length > 0 && books.map(b => {
                         return (
                             <li 
                                 key={b.id}
@@ -128,7 +145,6 @@ export default function Books({ books, authors, highlights, setFilters, loadData
                             </li>
                         );
                     })
-                    : null
                 }
             </ul>   
         </div>
