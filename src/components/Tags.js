@@ -6,25 +6,20 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Tags() {
-    // const [addModalShow, setAddModalShow] = useState(false);
-    // const [delModalShow, setDelModalShow] = useState(false);
-    // const [selectedItem, setSelectedItem] = useState(null);
+    const [addModalShow, setAddModalShow] = useState(false);
+    const [delModalShow, setDelModalShow] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
     const [tags, setTags] = useState([]);
 
-    // const handleShow = () => setAddModalShow(true); 
-    // const handleHide = () => setAddModalShow(false);
-
-    // const handleDelShow = () => setDelModalShow(true); 
-    // const handleDelHide = () => setDelModalShow(false);
-
     useEffect(() => {
         if (state.data === undefined) return;
         setTags(filterTags(state.data));
-    }, [state]);
+        console.log("tagseffect", state.data);
+    }, [state.filters, state.data.tags]);
 
-    const setTagFilter = (e) => {
+    function setTagFilter(e) {
         dispatch({type: 'setFilter', payload: {author: "", tag: e.currentTarget.value, book: ""}});
     }
 
@@ -51,60 +46,61 @@ export default function Tags() {
         return data.tags; 
     }
 
-    // const deleteTag = async () => {
-    //     await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-    //     clearFilters();
-    //     handleDelHide();
-    //     await loadData();
-    //     setSelectedItem(null)
-    // }
+    async function deleteTag() {
+        dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
+        dispatch({type: 'deleteTag', payload: deleted.data[0]});
+        setDelModalShow(false);
+        setSelectedItem(null)
+    }
 
-    // const delClicked = (e) => {
-    //     handleDelShow();
-    //     setSelectedItem(e.target.parentElement.value);
-    // }
+    function delClicked(tId) {
+        setDelModalShow(true);
+        setSelectedItem(tId);
+    }
 
-    // const submitFunc = async (e) => {
-    //     e.preventDefault();
-    //     if (e.target.tag.value === "") {
-    //         alert("field must not be blank");
-    //         return;
-    //     }
-    //     await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
-    //     loadData();
-    //     handleHide();
-    // }
+    async function submitFunc(e) {
+        e.preventDefault();
+        if (e.target.tag.value === "") {
+            alert("field must not be blank");
+            return;
+        }
+        const added = await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
+        console.log(added.data);
+        dispatch({type: 'addTag', payload: added.data[0]});
+        setAddModalShow(false);
+    }
 
-    // const tagForm = (
-    //     <form onSubmit={submitFunc}>
-    //         <label>
-    //             Tag
-    //             <input name="tag" type="text" placeholder="Tag" required />
-    //         </label>
-    //         <Button variant="primary" type="submit">Save</Button>
-    //     </form>
-    // )
+    const tagForm = (
+        <form onSubmit={submitFunc}>
+            <label>
+                Tag
+                <input name="tag" type="text" placeholder="Tag" required />
+            </label>
+            <Button variant="primary" type="submit">Save</Button>
+        </form>
+    )
 
-    // const areYouSure = (
-    //     <>
-    //         <p>Deleting this tag will remove it from all highlights. It cannot be undone!</p>
-    //         <Button variant="danger" onClick={deleteTag} >Delete</Button>
-    //     </>
-    // )
+    const areYouSure = (
+        <>
+            <p>Deleting this tag will remove it from all highlights. It cannot be undone!</p>
+            <Button variant="danger" onClick={deleteTag} >Delete</Button>
+        </>
+    )
 
     return (
         <div className="tags filter-component">
             <h3>Tags ({tags.length || 0})</h3>
-            {/* <Button className="add-button" variant="primary" onClick={handleShow}>
+            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add
             </Button>
             <ModalForm
                 show={addModalShow}
-                onHide={handleHide}
+                onHide={() => setAddModalShow(false)}
                 title="Add Tag"
                 form={tagForm}
                 size="md"
-            /> */}
+            />
             <ul>
                 {
                     tags.length > 0 && tags.map(t => {
@@ -113,20 +109,21 @@ export default function Tags() {
                                 key={t.id}
                                 value={t.id} 
                                 onClick={setTagFilter}>
-                                {/* <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
-                                <ModalForm
-                                    show={delModalShow}
-                                    onHide={handleDelHide}
-                                    title="Delete Tag"
-                                    form={areYouSure}
-                                    size="sm"
-                                /> */}
+                                <Button className="delete-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
+
                                 {t.tag}
                             </li>
                         );
                     })
                 }
             </ul>
+            <ModalForm
+                show={delModalShow}
+                onHide={() => setDelModalShow(false)}
+                title="Delete Tag"
+                form={areYouSure}
+                size="sm"
+            />
         </div>
     )
 }

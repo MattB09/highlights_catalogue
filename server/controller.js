@@ -197,7 +197,6 @@ const deleteAuthor = async (request, response) => {
         author_id: request.params.id,
         user_id: request.params.user_id 
     }).update({author_id: null}).returning('*');
-    console.log(nulledBooks);
     const result = await db('Authors').where({
         id: request.params.id,
         user_id: request.params.user_id
@@ -206,6 +205,16 @@ const deleteAuthor = async (request, response) => {
 }
 
 const deleteBook = async (request, response) => {
+    let hIds = await db.select("id").from("Highlights").where({
+        book_id: request.params.id,
+        user_id: request.params.user_id
+    });
+    hIds = hIds.map(h => h.id);
+    //first delete related highlights_tags
+    await db("highlights_tags").whereIn('highlight_id', hIds).del();
+    // then delete related highlights
+    await db('Highlights').whereIn('id', hIds).del();
+    // then delete the book
     const result = await db('Books').where({
         id: request.params.id,
         user_id: request.params.user_id

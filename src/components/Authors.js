@@ -7,19 +7,17 @@ import axios from "axios";
 
 export default function Authors() {
     const [addModalShow, setAddModalShow] = useState(false);
-    // const [delModalShow, setDelModalShow] = useState(false);
-    // const [selectedItem, setSelectedItem] = useState(null);
+    const [delModalShow, setDelModalShow] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
     const [authors, setAuthors] = useState([]);
 
-    // const handleDelShow = () => setDelModalShow(true); 
-    // const handleDelHide = () => setDelModalShow(false);
 
     useEffect(() => {
         if (state.data === undefined) return;
         setAuthors(filterAuthors(state.data));
-    }, [state]);
+    }, [state.filters, state.data.authors]);
 
     function filterAuthors(data) {
         if (state.filters.author !== "") return [data.authors.find(a => a.id === state.filters.author)];
@@ -37,38 +35,36 @@ export default function Authors() {
         return data.authors; 
     }
 
-    const setAuthFilter = (e) => {
+    function setAuthFilter(e) {
         dispatch({type: 'setFilter', payload: {book: "", tag: "", author: e.currentTarget.value}});
     }
 
-    // const deleteAuthor = async () => {
-    //     await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-    //     clearFilters();
-    //     handleDelHide();
-    //     await loadData();
-    //     setSelectedItem(null);
+    async function deleteAuthor() {
+        dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
+        dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
+        setDelModalShow(false);
+        setSelectedItem(null);
+    }
 
-    // }
+    function delClicked(authId) {
+        setDelModalShow(true);
+        setSelectedItem(authId);
+    }
 
-    // const delClicked = (e) => {
-    //     handleDelShow();
-    //     setSelectedItem(e.target.parentElement.value);
-    // }
-
-    const submitFunc = async (e) => {
+    async function addAuthor(e) {
         e.preventDefault();
         if (e.target.author.value === "") {
             alert("Field must not be blank");
             return;
         } // check for duplicates..? how?
         const addedAuth = await axios.post(`/api/${currentUser.uid}/authors`, {author: e.target.author.value});
-        console.log("console.log:", addedAuth.data)
         dispatch({type: 'addAuthor', payload: addedAuth.data[0]});
         setAddModalShow(false);
     }
 
     const authForm = (
-        <form onSubmit={submitFunc}>
+        <form onSubmit={addAuthor}>
         <label>
             Author
             <input name="author" type="text" placeholder="Author's name" required />
@@ -77,12 +73,12 @@ export default function Authors() {
     </form>    
     )
 
-    // const areYouSure = (
-    //     <>
-    //         <p>Deleting this author will leave the author's books authorless!.</p>
-    //         <Button variant="danger" onClick={deleteAuthor} >Delete</Button>
-    //     </>
-    // )
+    const areYouSure = (
+        <>
+            <p>Deleting this author will leave the author's books authorless!.</p>
+            <Button variant="danger" onClick={deleteAuthor} >Delete</Button>
+        </>
+    )
 
     return (
         <div className="authors filter-component">
@@ -100,29 +96,29 @@ export default function Authors() {
             <ul>
                 {
                 authors.length > 0 && authors.map(a => { 
-                        if (a) {
-                            return (
-                                <li 
-                                    key={a.id}
-                                    value={a.id}
-                                    onClick={setAuthFilter}
-                                >
-                                    {/* <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
-                                    <ModalForm
-                                        show={delModalShow}
-                                        onHide={handleDelHide}
-                                        title="Delete Author"
-                                        form={areYouSure}
-                                        size="sm"
-                                    />                                 */}
-                                    {a.name}
-                                </li>
-                            );
-                        }
-                        return null;
-                    })
+                    if (a) {
+                        return (
+                            <li 
+                                key={a.id}
+                                value={a.id}
+                                onClick={setAuthFilter}
+                            >
+                                <Button className="delete-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                                {a.name}
+                            </li>
+                        );
+                    }
+                    return null;
+                })
                 }
             </ul>
+            <ModalForm
+                show={delModalShow}
+                onHide={() => setDelModalShow(false)}
+                title="Delete Author"
+                form={areYouSure}
+                size="sm"
+            />    
         </div>
     )
 }
