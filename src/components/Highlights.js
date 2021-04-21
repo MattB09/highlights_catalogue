@@ -14,15 +14,6 @@ export default function Highlights() {
     // const [editModalShow, setEditModalShow] = useState(false);
     // const [selectedItem, setSelectedItem] = useState(null);
 
-
-    // const handleAddShow = () => setAddModalShow(true); 
-    // const handleAddHide = () => setAddModalShow(false);
-
-    // const handleDelShow = () => setDelModalShow(true); 
-    // const handleDelHide = () => setDelModalShow(false);
-
-    // const handleEditShow = () => setEditModalShow(true); 
-    // const handleEditHide = () => setEditModalShow(false);
     useEffect(() => {
         if (state.data === undefined) return;
         setHighlights(filterHighlights(state.data))

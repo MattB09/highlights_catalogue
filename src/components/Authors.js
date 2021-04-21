@@ -13,7 +13,6 @@ export default function Authors() {
     const { state, dispatch } = useContext(Context);
     const [authors, setAuthors] = useState([]);
 
-
     useEffect(() => {
         if (state.data === undefined) return;
         setAuthors(filterAuthors(state.data));
