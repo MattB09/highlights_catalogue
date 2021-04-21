@@ -87,7 +87,7 @@ export default function Books() {
             <select name="author">
                 <option value="null">Select Author</option>
 				{state.data.authors && state.data.authors.map(a=> {
-                    return <option value={a.id}>{a.name}</option>
+                    return <option key={a.id} value={a.id}>{a.name}</option>
                 })}
 			</select>
             <Button variant="primary" type="submit">Save</Button>

@@ -16,7 +16,6 @@ export default function Tags() {
     useEffect(() => {
         if (state.data === undefined) return;
         setTags(filterTags(state.data));
-        console.log("tagseffect", state.data);
     }, [state.filters, state.data.tags]);
 
     function setTagFilter(e) {

@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import { AuthProvider } from "./Auth";
 import PrivateRoute from "./PrivateRoute";
 import Landing from "./components/Landing";
+import { addSorted } from './utils/helpers'
 
 export const Context = React.createContext();
 
@@ -78,6 +79,20 @@ const reducer = (state, action) => {
       let tIndex = tagsCopy1.findIndex((tag) => tag.id === action.payload.id);
       tagsCopy1.splice(tIndex, 1);
       return { ...state, data: {...state.data, highlights: hCopy1, tags: tagsCopy1}};
+    case 'addHighlight':
+      let highlightsCopy = [...state.data.highlights];
+      highlightsCopy.push(action.payload);
+      highlightsCopy.sort((a, b) => {
+        if (a.highlight.toUpperCase() > b.highlight.toUpperCase()) return 1;
+        if (a.highlight.toUpperCase() < b.highlight.toUpperCase()) return -1;
+        return 0;
+      })
+      return { filters: state.filters, data: {...state.data, highlights: highlightsCopy}};
+    case 'deleteHighlight':
+      let highlightsCopy1 = [...state.data.highlights];
+      let hIndex = highlightsCopy1.findIndex((h) => h.id === action.payload.id);
+      highlightsCopy1.splice(hIndex, 1);
+      return { filters: state.filters, data: {...state.data, highlights: highlightsCopy1}};
     default:
       return state
   }
