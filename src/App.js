@@ -23,12 +23,7 @@ const reducer = (state, action) => {
     // Author reducers
     case 'addAuthor':
       let authorsCopy = [...state.data.authors];
-      authorsCopy.push(action.payload)
-      authorsCopy.sort((a, b) => {
-        if (a.name.toUpperCase() > b.name.toUpperCase()) return 1;
-        if (a.name.toUpperCase() < b.name.toUpperCase()) return -1;
-        return 0;
-      });
+      addSorted(action.payload, authorsCopy, "name");
       return { filters: state.filters, data: { ...state.data, authors: authorsCopy}}
     case 'editAuthor':
       let authorsCopy1 = [...state.data.authors];
@@ -43,12 +38,7 @@ const reducer = (state, action) => {
     // Books reducers
     case 'addBook':
       let booksCopy = [...state.data.books];
-      booksCopy.push(action.payload)
-      booksCopy.sort((a, b) => {
-        if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
-        if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
-        return 0;
-      });
+      addSorted(action.payload, booksCopy, "title");
       return { filters: state.filters, data: { ...state.data, books: booksCopy}}
     case 'deleteBook':
       let booksCopy1 = [...state.data.books];
@@ -59,12 +49,7 @@ const reducer = (state, action) => {
     // tags reducers
     case 'addTag':
       let tagsCopy = [...state.data.tags];
-      tagsCopy.push(action.payload);
-      tagsCopy.sort((a, b) => {
-        if (a.tag.toUpperCase() > b.tag.toUpperCase()) return 1;
-        if (a.tag.toUpperCase() < b.tag.toUpperCase()) return -1;
-        return 0;
-      })
+      addSorted(action.payload, tagsCopy, "tag");
       return { filters: state.filters, data: {...state.data, tags: tagsCopy}};
     case 'deleteTag':
       // remove tag from highlights
@@ -81,12 +66,7 @@ const reducer = (state, action) => {
       return { ...state, data: {...state.data, highlights: hCopy1, tags: tagsCopy1}};
     case 'addHighlight':
       let highlightsCopy = [...state.data.highlights];
-      highlightsCopy.push(action.payload);
-      highlightsCopy.sort((a, b) => {
-        if (a.highlight.toUpperCase() > b.highlight.toUpperCase()) return 1;
-        if (a.highlight.toUpperCase() < b.highlight.toUpperCase()) return -1;
-        return 0;
-      })
+      addSorted(action.payload, highlightsCopy, "highlight");
       return { filters: state.filters, data: {...state.data, highlights: highlightsCopy}};
     case 'deleteHighlight':
       let highlightsCopy1 = [...state.data.highlights];
