@@ -17,7 +17,6 @@ export default function Highlights() {
     useEffect(() => {
         if (state.data === undefined) return;
         setHighlights(filterHighlights(state.data))
-        console.log("heffect", state.data.highlights);
     }, [state.filters, state.data.highlights]);
 
 

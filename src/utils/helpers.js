@@ -16,6 +16,9 @@ export function binaryFind(searchElement, arr, prop) {
       maxIndex = currentIndex - 1;
     }
   }
+  if (currentIndex === arr.length - 1 && (searchElement[prop].toUpperCase() > currentElement[prop].toUpperCase())) {
+    currentIndex++;
+  }
   return currentIndex;
 }
 
