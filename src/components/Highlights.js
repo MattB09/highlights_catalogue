@@ -1,40 +1,54 @@
-import React, {useState, useContext} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
+import { Context } from '../App';
 import axios from "axios";
 
-export default function Highlights({ highlights, books, loadData, clearFilters, setFilters }) {
+export default function Highlights() {
+    const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context)
+    const [highlights, setHighlights] = useState([]);
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [editModalShow, setEditModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const { currentUser } = useContext(AuthContext);
 
-    const handleAddShow = () => setAddModalShow(true); 
-    const handleAddHide = () => setAddModalShow(false);
+    useEffect(() => {
+        if (state.data === undefined) return;
+        setHighlights(filterHighlights(state.data))
+        console.log("heffect", state.data.highlights);
+    }, [state.filters, state.data.highlights]);
 
-    const handleDelShow = () => setDelModalShow(true); 
-    const handleDelHide = () => setDelModalShow(false);
 
-    const handleEditShow = () => setEditModalShow(true); 
-    const handleEditHide = () => setEditModalShow(false);
+    function filterHighlights(data) { 
+        if (state.filters.author !== "") return data.highlights.filter(h => h.book.author_id === state.filters.author);
+        if (state.filters.book !== "") return data.highlights.filter(h => h.book.id === state.filters.book);
+        if (state.filters.tag !== "") {
+            let hWithTag = data.highlights.filter(h => {
+                if (h.tags.find(t => t.id === state.filters.tag)) return true;
+                return false;
+            });
+            return hWithTag;
+        }
+        return data.highlights; 
+    }
 
     const deleteHighlight = async () => {
-        await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
-        handleDelHide();
-        await loadData();
-        setSelectedItem(null)
+        const deleted = await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
+        dispatch({type: 'deleteHighlight', payload: deleted.data[0]});
+		setDelModalShow(false);
+        setSelectedItem(null);
     }
 
-    const delClicked = (e) => {
-        handleDelShow();
-        setSelectedItem(e.target.parentElement.value);
+    const delClicked = (hId) => {
+        setDelModalShow(true)
+        setSelectedItem(hId);
     }
 
-    const editTagClicked = (e) => {
-        handleEditShow();
-        setSelectedItem(e.target.parentElement.getAttribute('data-value'))
+    const editTagClicked = (hId) => {
+        setEditModalShow(true);
+        setSelectedItem(hId)
     }
 
     const submitFunc = async (e) => {
@@ -48,26 +62,28 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
             book_id: parseInt(e.target.book.value),
             reviewed: true,
         }
-        await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
-        await loadData();
-        handleAddHide();
+        let added = await axios.post(`/api/${currentUser.uid}/highlights`, newHighlight);
+        let book = state.data.books.find((book) => book.id === e.target.book.value);
+        added = {...added.data[0], book, tags: []}
+        dispatch({type: 'addHighlight', payload: added});
+        setAddModalShow(false);
     }
 
     const editFunc = async (e) => {
         console.log("selected", selectedItem);
-        handleEditHide();
+        setEditModalShow(false);
     }
 
     const highlightForm = (
         <form onSubmit={submitFunc}>
             <label>
-                highlight
+                Highlight:
                 <textarea name="highlight" rows="5" columns="70" placeholder="Enter the highlight here" required />
             </label>
             <select name="book">
                 <option value="null">Select Book</option>
-				{books && books.map(b=> {
-                    return <option value={b.id}>{b.title}</option>
+				{state.data.books.length > 0 && state.data.books.map(b => {
+                    return <option key={b.id} value={b.id}>{b.title}</option>
                 })}
 			</select>
             <Button variant="primary" type="submit">Save</Button>
@@ -96,50 +112,51 @@ export default function Highlights({ highlights, books, loadData, clearFilters, 
 
     return (
         <div id="highlights">
-            <h3>Highlights ({(highlights && highlights.length) || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={handleAddShow}>
+            <h3>Highlights ({highlights.length || 0})</h3>
+            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add
             </Button>
             <ModalForm
                 show={addModalShow}
-                onHide={handleAddHide}
+                onHide={() => setAddModalShow(false)}
                 title="Add Highlight"
                 form={highlightForm}
                 size="lg"
             />
             <ul>
                 {
-                    (highlights && highlights.length) && highlights.map(h => {
+                    highlights.length > 0 && highlights.map(h => {
                         return (
                             <li 
                             key={h.id}
                             value={h.id}
                             >
-                                <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
-                                <ModalForm
-                                    show={delModalShow}
-                                    onHide={handleDelHide}
-                                    title="Delete Highlight"
-                                    form={areYouSure}
-                                    size="md"
-                                />
+                                <Button className="delete-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                                 {h.highlight}
                                 <div className="htags" data-value={h.id}>
                                     Tags: {(h.tags.length && h.tags.map(t => t.tag).join(', ')) || "none"}
-                                    <Button variant="primary" className="delete-button edit-button" onClick={editTagClicked}>Edit</Button>
-                                    <ModalForm
-                                        show={editModalShow}
-                                        onHide={handleEditHide}
-                                        title="Edit Tags"
-                                        form={editTagForm}
-                                        size="md"
-                                    />
+                                    <Button variant="primary" className="delete-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
+
                                 </div>
                             </li>
                         );
                     })
                 }
             </ul>
+			<ModalForm
+				show={delModalShow}
+				onHide={() => setDelModalShow(false)}
+				title="Delete Highlight"
+				form={areYouSure}
+				size="md"
+			/>
+			<ModalForm
+				show={editModalShow}
+				onHide={() => setEditModalShow(false)}
+				title="Edit Tags"
+				form={editTagForm}
+				size="md"
+			/>
         </div>
     )
 }

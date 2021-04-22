@@ -1,45 +1,53 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { Button } from 'react-bootstrap';
 import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
+import { Context } from '../App';
 import axios from "axios";
 
-export default function Books({ books, authors, highlights, setFilters, loadData, clearFilters }) {
+export default function Books() {
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context);
+    const [ books, setBooks ] = useState([]);
 
-    const handleAddShow = () => setAddModalShow(true); 
-    const handleAddHide = () => setAddModalShow(false);
+    useEffect(() => {
+        if (state.data === undefined) return;
+        setBooks(filterBooks(state.data));
+    }, [state]);
 
-    const handleDelShow = () => setDelModalShow(true); 
-    const handleDelHide = () => setDelModalShow(false);
+    function setBookFilter(e) {
+        dispatch({type: 'setFilter', payload: {author: "", tag:"", book: e.currentTarget.value}});
+    }
 
-    const setBookFilter = (e) => {
-        setFilters({author: "", tag:"", book: e.currentTarget.value});
+    function filterBooks(data) {
+        if (state.filters.author !== "") return data.books.filter(b => b.author_id === state.filters.author);
+        if (state.filters.book !== "") return [data.books.find(b => b.id === state.filters.book)];
+        if (state.filters.tag !== "") {
+            let bookIds = data.highlights.filter(h => h.tags.find(t => t.id === state.filters.tag))
+                .map(h => h.book.id);
+            if (bookIds.length) return [data.books.find(b => bookIds.includes(b.id))];
+            else return [];
+        }
+        return data.books; 
     }
 
     const deleteBook = async () => {
-        let relatedH = highlights.filter(h => h.book.id === selectedItem)
-        if (relatedH.length) {
-            for (const h of relatedH) {
-                await axios.delete(`/api/${currentUser.uid}/highlights/${h.id}`);
-            }
-        }
-        await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
-        clearFilters();
-        handleDelHide();
-        await loadData();
+        dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
+        dispatch({type: 'deleteBook', payload: deleted.data[0]});
         setSelectedItem(null);
+        setDelModalShow(false);
     }
 
-    const delClicked = (e) => {
-        handleDelShow();
-        setSelectedItem(e.target.parentElement.value);
+    const delClicked = (bookId) => {
+        setDelModalShow(true);
+        setSelectedItem(bookId);
     }
 
-    const submitFunc = async (e) => {
+    async function submitFunc(e) {
         e.preventDefault();
         if (e.target.title.value === "") {
              alert("field must not be blank");
@@ -52,9 +60,10 @@ export default function Books({ books, authors, highlights, setFilters, loadData
             year_read: e.target.year_read.value || null,
             author_id: parseInt(e.target.author.value) || null,
         }
-        await axios.post(`/api/${currentUser.uid}/books`, newBook);
-        loadData();
-        handleAddHide();
+        const added = await axios.post(`/api/${currentUser.uid}/books`, newBook);
+        added.data[0].name = state.data.authors.find(auth => auth.id === newBook.author_id).name;
+        dispatch({type: 'addBook', payload: added.data[0]});
+        setAddModalShow(false);
     }
 
     const bookForm = (
@@ -77,8 +86,8 @@ export default function Books({ books, authors, highlights, setFilters, loadData
             </label>
             <select name="author">
                 <option value="null">Select Author</option>
-				{authors && authors.map(a=> {
-                    return <option value={a.id}>{a.name}</option>
+				{state.data.authors && state.data.authors.map(a=> {
+                    return <option key={a.id} value={a.id}>{a.name}</option>
                 })}
 			</select>
             <Button variant="primary" type="submit">Save</Button>
@@ -94,39 +103,39 @@ export default function Books({ books, authors, highlights, setFilters, loadData
 
     return (
         <div className="books filter-component">
-            <h3>Books ({(books && books.length) || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={handleAddShow}>
+            <h3>Books ({books.length || 0})</h3>
+            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add
             </Button>
             <ModalForm
                 show={addModalShow}
-                onHide={handleAddHide}
+                onHide={() => setAddModalShow(false)}
                 title="Add Book"
                 form={bookForm}
                 size="lg"
             />
             <ul>
                 {
-                    books && books.map(b => {
+                    books.length > 0 && books.map(b => {
                         return (
                             <li 
                                 key={b.id}
                                 value={b.id}
                                 onClick={setBookFilter}>
-                                <Button className="delete-button" variant="danger" onClick={delClicked}>Del</Button>
-                                <ModalForm 
-                                    show={delModalShow}
-                                    onHide={handleDelHide}
-                                    title="Delete Book"
-                                    form={areYouSure}
-                                    size="sm"
-                                />
+                                <Button className="delete-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
                                 <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
                             </li>
                         );
                     })
                 }
-            </ul>   
+            </ul>
+            <ModalForm 
+                show={delModalShow}
+                onHide={() => setDelModalShow(false)}
+                title="Delete Book"
+                form={areYouSure}
+                size="sm"
+            /> 
         </div>
     )
 }
