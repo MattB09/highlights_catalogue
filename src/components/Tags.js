@@ -18,8 +18,8 @@ export default function Tags() {
         setTags(filterTags(state.data));
     }, [state.filters, state.data.tags]);
 
-    function setTagFilter(e) {
-        dispatch({type: 'setFilter', payload: {author: "", tag: e.currentTarget.value, book: ""}});
+    function setTagFilter(tId) {
+        dispatch({type: 'setFilter', payload: {author: "", tag: tId, book: ""}});
     }
 
     function filterTags(data) { 
@@ -104,12 +104,13 @@ export default function Tags() {
                     tags.length > 0 && tags.map(t => {
                         return (
                             <li 
+                                className="filter-item"
                                 key={t.id}
-                                value={t.id} 
-                                onClick={setTagFilter}>
+                                // value={t.id} 
+                                // onClick={setTagFilter}
+                                >
                                 <Button className="delete-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
-
-                                {t.tag}
+                                <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
                             </li>
                         );
                     })

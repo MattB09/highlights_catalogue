@@ -74,7 +74,7 @@ export default function Authors() {
 
     const areYouSure = (
         <>
-            <p>Deleting this author will leave the author's books authorless!.</p>
+            <p>Deleting this author will leave the author's books authorless!</p>
             <Button variant="danger" onClick={deleteAuthor} >Delete</Button>
         </>
     )

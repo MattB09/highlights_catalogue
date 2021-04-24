@@ -79,6 +79,16 @@ body {
   margin-bottom: 20px;
 }
 
+.filter-item {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.filter-text {
+  display: inline-block;
+  flex-grow: 100;
+}
 
 .delete-button {
   font-size: 10px;
