@@ -18,8 +18,8 @@ export default function Books() {
         setBooks(filterBooks(state.data));
     }, [state]);
 
-    function setBookFilter(e) {
-        dispatch({type: 'setFilter', payload: {author: "", tag:"", book: e.currentTarget.value}});
+    function setBookFilter(bId) {
+        dispatch({type: 'setFilter', payload: {author: "", tag:"", book: bId}});
     }
 
     function filterBooks(data) {
@@ -118,12 +118,11 @@ export default function Books() {
                 {
                     books.length > 0 && books.map(b => {
                         return (
-                            <li 
-                                key={b.id}
-                                value={b.id}
-                                onClick={setBookFilter}>
+                            <li className="filter-item" key={b.id}>
                                 <Button className="delete-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
-                                <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
+                                <div className="filter-text" onClick={() => setBookFilter(b.id)}>
+                                    <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
+                                </div>
                             </li>
                         );
                     })

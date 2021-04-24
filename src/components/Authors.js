@@ -97,10 +97,7 @@ export default function Authors() {
                 authors.length > 0 && authors.map(a => { 
                     if (a) {
                         return (
-                            <li 
-                                className="filter-item"
-                                key={a.id}
-                            >
+                            <li className="filter-item" key={a.id}>
                                 <Button className="delete-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                             </li>

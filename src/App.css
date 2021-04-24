@@ -79,6 +79,20 @@ body {
   margin-bottom: 20px;
 }
 
+#highlights li:after {
+  content: " ";
+  display: block;
+  margin-top: 15px;
+  border-bottom: 1px solid #05404c3a;
+}
+
+pre {
+  display: inline;
+  white-space: pre-wrap;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 1rem;
+}
+
 .filter-item {
   display: flex;
   flex-direction: row;
