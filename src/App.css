@@ -96,7 +96,7 @@ body {
   background-color: #A4D19F;
 }
 
-.htags {
+.indented {
   padding-left: 50px;
 }
 
@@ -107,4 +107,79 @@ body {
 .logo {
   width: 100px;
   object-fit: cover;
+}
+
+/* --------------- Highlights form styling ------------------- */
+.h-form {
+  display: grid;
+  grid-template-columns: 70px 1fr 1fr 1fr;
+  grid-template-rows: 3fr 0.7fr auto 0.7fr;
+  grid-template-areas: 
+  "h-label high high high"
+  "t-label t-select message message"
+  ". t-add t-display-container t-display-container"
+  "b-label b-select . save";
+  gap: 2px;
+}
+
+.h-form-label {
+  justify-self: end;
+  font-weight: bold;
+}
+
+.h-label {
+  grid-area: h-label;
+}
+
+.h-input {
+  grid-area: high;
+}
+
+.t-label {
+  grid-area: t-label;
+  margin: 0px;
+  align-self: center;
+}
+
+.t-select {
+  grid-area: t-select;
+  align-self: center;
+}
+
+.t-add {
+  grid-area: t-add;
+  align-self: start;
+  justify-self: end;
+}
+
+.t-display-container {
+  display: flex;
+  flex-direction: column;
+  grid-area: t-display-container;
+  padding-left: 20px;
+}
+
+.b-label {
+  grid-area: b-label;
+  align-self: center;
+  margin: 0px;
+}
+
+.b-select {
+  grid-area: b-select;
+  align-self: start;
+  align-self: center;
+}
+
+.h-save {
+  grid-area: save;
+  justify-self: end;
+  align-self: start;
+}
+
+.t-message {
+  margin: 0;
+  color:rgba(81, 81, 90, 1);
+  grid-area: message;
+  /* justify-self: start; */
 }

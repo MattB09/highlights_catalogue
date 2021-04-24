@@ -65,7 +65,6 @@ export default function Tags() {
             return;
         }
         const added = await axios.post(`/api/${currentUser.uid}/tags`, {tag: e.target.tag.value});
-        console.log(added.data);
         dispatch({type: 'addTag', payload: added.data[0]});
         setAddModalShow(false);
     }
