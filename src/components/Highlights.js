@@ -22,7 +22,6 @@ export default function Highlights() {
     useEffect(() => {
         if (state.data === undefined) return;
         setHighlights(filterHighlights(state.data))
-        console.log("addedTags", addedTags)
     }, [state.filters, state.data.highlights, addedTags]);
 
     // ------------------ Filtering --------------------------------------
