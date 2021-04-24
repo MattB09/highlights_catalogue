@@ -34,8 +34,8 @@ export default function Authors() {
         return data.authors; 
     }
 
-    function setAuthFilter(e) {
-        dispatch({type: 'setFilter', payload: {book: "", tag: "", author: e.currentTarget.value}});
+    function setAuthFilter(aId) {
+        dispatch({type: 'setFilter', payload: {book: "", tag: "", author: aId}});
     }
 
     async function deleteAuthor() {
@@ -98,12 +98,11 @@ export default function Authors() {
                     if (a) {
                         return (
                             <li 
+                                className="filter-item"
                                 key={a.id}
-                                value={a.id}
-                                onClick={setAuthFilter}
                             >
                                 <Button className="delete-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
-                                {a.name}
+                                <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                             </li>
                         );
                     }

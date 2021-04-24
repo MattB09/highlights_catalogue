@@ -106,8 +106,6 @@ export default function Tags() {
                             <li 
                                 className="filter-item"
                                 key={t.id}
-                                // value={t.id} 
-                                // onClick={setTagFilter}
                                 >
                                 <Button className="delete-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
                                 <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
