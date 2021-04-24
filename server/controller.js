@@ -120,6 +120,14 @@ const addHighlight = async (request, response) => {
         user_id: request.params.user_id
     }
     const added = await db('Highlights').insert(newHighlight).returning('*');
+    const highlight_id = added[0].id;
+    console.log("highlight added: tags", request.body.tags)
+    for (const tag of request.body.tags) {
+        await db('highlights_tags').insert({
+            highlight_id,
+            tag_id: tag.id
+        });
+    }
     response.send(added);
 }
 
