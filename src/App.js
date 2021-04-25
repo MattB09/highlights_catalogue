@@ -32,9 +32,13 @@ const reducer = (state, action) => {
       return { ...state, data: { ...state.data, authors: authorsCopy1}}
     case 'deleteAuthor':
       let authorsCopy2 = [...state.data.authors];
+      let bCopy = [...state.data.books];
+      bCopy.forEach(b => {
+        if (b.name === action.payload.name) b.name = null;
+      });
       let index = authorsCopy2.findIndex((auth) => auth.id === action.payload.id);
       authorsCopy2.splice(index, 1);
-      return { ...state, data: { ...state.data, authors: authorsCopy2}}
+      return { ...state, data: { ...state.data, authors: authorsCopy2, books: bCopy}}
     // Books reducers
     case 'addBook':
       let booksCopy = [...state.data.books];

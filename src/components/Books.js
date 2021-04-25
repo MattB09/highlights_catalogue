@@ -35,7 +35,6 @@ export default function Books() {
     }
 
     const deleteBook = async () => {
-        dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
         dispatch({type: 'deleteBook', payload: deleted.data[0]});
         setSelectedItem(null);
@@ -116,9 +115,10 @@ export default function Books() {
                     books.length > 0 && books.map(b => {
                         return (
                             <li className="filter-item" key={b.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setBookFilter(b.id)}>
-                                    <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
+                                    <span className="book-title">{b.title}</span>
+                                    {/* /* by <span className="book-author">{b.name || "unspecified"}</span> */}
                                 </div>
                             </li>
                         );

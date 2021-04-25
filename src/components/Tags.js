@@ -102,7 +102,7 @@ export default function Tags() {
                     tags.length > 0 && tags.map(t => {
                         return (
                             <li className="filter-item" key={t.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
                                 <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
                             </li>
                         );

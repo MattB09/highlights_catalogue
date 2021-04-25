@@ -167,12 +167,12 @@ export default function Highlights() {
                             key={h.id}
                             value={h.id}
                             >
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                                 <pre>{h.highlight}</pre>
                                 <div className="indented">Book: {h.book === undefined ? "unspecified" : h.book.title || "unspecified" }</div>
                                 <div className="indented" data-value={h.id}>
                                     Tags: {(h.tags.length && h.tags.map(t => t.tag).join(', ')) || "none"}
-                                    <Button variant="primary" className="delete-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
+                                    <Button variant="primary" className="small-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
 
                                 </div>
                             </li>

@@ -204,6 +204,7 @@ const deleteAuthor = async (request, response) => {
         author_id: request.params.id,
         user_id: request.params.user_id 
     }).update({author_id: null}).returning('*');
+    console.log(nulledBooks);
     const result = await db('Authors').where({
         id: request.params.id,
         user_id: request.params.user_id

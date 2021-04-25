@@ -39,7 +39,6 @@ export default function Authors() {
     }
 
     async function deleteAuthor() {
-        dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
         dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
         setDelModalShow(false);
@@ -96,7 +95,7 @@ export default function Authors() {
                     if (a) {
                         return (
                             <li className="filter-item" key={a.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                             </li>
                         );
