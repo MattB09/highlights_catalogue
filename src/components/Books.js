@@ -35,6 +35,7 @@ export default function Books() {
     }
 
     const deleteBook = async () => {
+        if (books.length === 1) dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
         dispatch({type: 'deleteBook', payload: deleted.data[0]});
         setSelectedItem(null);

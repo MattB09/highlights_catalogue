@@ -46,7 +46,7 @@ export default function Tags() {
     }
 
     async function deleteTag() {
-        dispatch({type: 'clearFilters'});
+        if (tags.length === 1) dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
         dispatch({type: 'deleteTag', payload: deleted.data[0]});
         setDelModalShow(false);

@@ -39,6 +39,7 @@ export default function Authors() {
     }
 
     async function deleteAuthor() {
+        if (authors.length === 1) dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
         dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
         setDelModalShow(false);

@@ -88,6 +88,7 @@ export default function Highlights() {
         added = {...added.data[0], book, tags: addedTags}
         dispatch({type: 'addHighlight', payload: added});
         setAddedTags([]);
+        setTagSelect("");
         setAddModalShow(false);
     }
 
