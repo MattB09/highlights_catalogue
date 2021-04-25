@@ -27,8 +27,13 @@ const reducer = (state, action) => {
       return { filters: state.filters, data: { ...state.data, authors: authorsCopy}}
     case 'editAuthor':
       let authorsCopy1 = [...state.data.authors];
+      let bCopy1 = [...state.data.books];
+      bCopy1.forEach(b => {
+        if (b.author_id === action.payload.id) b.name = action.payload.name;
+      });
       let ind = authorsCopy1.findIndex((auth) => auth.id === action.payload.id);
-      authorsCopy1.splice(ind, 1, action.payload);
+      authorsCopy1.splice(ind, 1);
+      addSorted(action.payload, authorsCopy1, "name");
       return { ...state, data: { ...state.data, authors: authorsCopy1}}
     case 'deleteAuthor':
       let authorsCopy2 = [...state.data.authors];

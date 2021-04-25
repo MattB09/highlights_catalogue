@@ -12,8 +12,10 @@ export default function Authors() {
     
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [authors, setAuthors] = useState([]);
+    const [editAuthorVal, setEditAuthorVal] = useState(null);
 
     // ------------------------- useEffect -------------------------------------
     useEffect(() => {
@@ -63,13 +65,30 @@ export default function Authors() {
     )
 
     // ------------------------- Edit Author ---------------------------------
-    async function editAuthor() {
-        alert("alert clicked")
+    async function editAuthor(e) {
+        e.preventDefault();
+        const editedAuth = await axios.put(`/api/${currentUser.uid}/authors/${selectedItem}`, {name: e.target.author.value});
+        dispatch({type: 'editAuthor', payload: editedAuth.data[0]});
+        setEditModalShow(false);
+        setSelectedItem(null);
+        setEditAuthorVal(null);
     }
 
     function editClicked(authId) {
-        alert("edit clicked", authId);
+        setSelectedItem(Number(authId));
+        let authVal = authors.find(a => a.id === Number(authId)).name;
+        setEditAuthorVal(authVal);
+        setEditModalShow(true)
     }
+
+    const editAuthForm = (
+        <form onSubmit={editAuthor} className="simple-form">
+            <label for="author-name" className='s-label form-label'>Author:</label>
+            <input id="author-name" className='s-input' name="author" type="text" required 
+                value={editAuthorVal} onChange={(e) => setEditAuthorVal(e.target.value)}/>
+            <Button variant="primary" type="submit" className="s-save">Save</Button>
+        </form>    
+    )
 
     // ------------------------- Delete Author -------------------------------
     async function deleteAuthor() {
@@ -123,7 +142,14 @@ export default function Authors() {
                 title="Delete Author"
                 form={areYouSure}
                 size="sm"
-            />    
+            /> 
+            <ModalForm
+                show={editModalShow}
+                onHide={() => setEditModalShow(false)}
+                title="Delete Author"
+                form={editAuthForm}
+                size="sm"
+            />       
         </div>
     );
 }
