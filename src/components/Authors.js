@@ -63,12 +63,10 @@ export default function Authors() {
     }
 
     const authForm = (
-        <form onSubmit={addAuthor}>
-        <label>
-            Author
-            <input name="author" type="text" placeholder="Author's name" required />
-        </label>
-        <Button variant="primary" type="submit">Save</Button>
+        <form onSubmit={addAuthor} className="simple-form">
+        <label for="author-name" className='s-label form-label'>Author:</label>
+        <input id="author-name" className='s-input' name="author" type="text" placeholder="Author's name" required />
+        <Button variant="primary" type="submit" className="s-save">Save</Button>
     </form>    
     )
 
@@ -90,7 +88,7 @@ export default function Authors() {
                 onHide={() => setAddModalShow(false)}
                 title="Add Author"
                 form={authForm}
-                size="md"
+                size="sm"
             />
             <ul>
                 {

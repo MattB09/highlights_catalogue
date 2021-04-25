@@ -70,12 +70,10 @@ export default function Tags() {
     }
 
     const tagForm = (
-        <form onSubmit={submitFunc}>
-            <label>
-                Tag
-                <input name="tag" type="text" placeholder="Tag" required />
-            </label>
-            <Button variant="primary" type="submit">Save</Button>
+        <form onSubmit={submitFunc} className='simple-form'>
+            <label for="tag-input" className='s-label form-label'>Tag: </label>
+            <input id="tag-input" name="tag" className='s-input' type="text" placeholder="Tag" required />
+            <Button variant="primary" type="submit" className='s-save'>Save</Button>
         </form>
     )
 
@@ -97,7 +95,7 @@ export default function Tags() {
                 onHide={() => setAddModalShow(false)}
                 title="Add Tag"
                 form={tagForm}
-                size="md"
+                size="sm"
             />
             <ul>
                 {
