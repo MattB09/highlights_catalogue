@@ -6,18 +6,22 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Authors() {
+    // ------------------------- useStates and useContext ------------------------
+    const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context);
+    
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const { currentUser } = useContext(AuthContext);
-    const { state, dispatch } = useContext(Context);
     const [authors, setAuthors] = useState([]);
 
+    // ------------------------- useEffect -------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
         setAuthors(filterAuthors(state.data));
     }, [state.filters, state.data.authors]);
 
+    // ------------------------- filtering -----------------------------------
     function filterAuthors(data) {
         if (state.filters.author !== "") return [data.authors.find(a => a.id === state.filters.author)];
         if (state.filters.book !== "") {
@@ -38,19 +42,7 @@ export default function Authors() {
         dispatch({type: 'setFilter', payload: {book: "", tag: "", author: aId}});
     }
 
-    async function deleteAuthor() {
-        if (authors.length === 1) dispatch({type: 'clearFilters'});
-        const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
-        dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
-        setDelModalShow(false);
-        setSelectedItem(null);
-    }
-
-    function delClicked(authId) {
-        setDelModalShow(true);
-        setSelectedItem(authId);
-    }
-
+    // ------------------------- Add Author -----------------------------------
     async function addAuthor(e) {
         e.preventDefault();
         if (e.target.author.value === "") {
@@ -64,11 +56,34 @@ export default function Authors() {
 
     const authForm = (
         <form onSubmit={addAuthor} className="simple-form">
-        <label for="author-name" className='s-label form-label'>Author:</label>
-        <input id="author-name" className='s-input' name="author" type="text" placeholder="Author's name" required />
-        <Button variant="primary" type="submit" className="s-save">Save</Button>
-    </form>    
+            <label for="author-name" className='s-label form-label'>Author:</label>
+            <input id="author-name" className='s-input' name="author" type="text" placeholder="Author's name" required />
+            <Button variant="primary" type="submit" className="s-save">Save</Button>
+        </form>    
     )
+
+    // ------------------------- Edit Author ---------------------------------
+    async function editAuthor() {
+        alert("alert clicked")
+    }
+
+    function editClicked(authId) {
+        alert("edit clicked", authId);
+    }
+
+    // ------------------------- Delete Author -------------------------------
+    async function deleteAuthor() {
+        if (authors.length === 1) dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
+        dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
+        setDelModalShow(false);
+        setSelectedItem(null);
+    }
+
+    function delClicked(authId) {
+        setDelModalShow(true);
+        setSelectedItem(authId);
+    }
 
     const areYouSure = (
         <>
@@ -77,6 +92,7 @@ export default function Authors() {
         </>
     )
 
+    // -------------------------- Auth component return -----------------------
     return (
         <div className="authors filter-component">
             <h3>Authors ({(authors.length) || 0})</h3>
@@ -96,7 +112,8 @@ export default function Authors() {
                     if (a) {
                         return (
                             <li className="filter-item" key={a.id}>
-                                <Button className="small-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                                <Button className="small-button" variant="warning" onClick={() => editClicked(a.id)}>Edit</Button>
+                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                             </li>
                         );

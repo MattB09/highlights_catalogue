@@ -7,9 +7,10 @@ import axios from "axios";
 import { addSorted } from '../utils/helpers';
 
 export default function Highlights() {
-    // ------------------ UseStates ----------------------------------------
+    // ------------------ useStates  and contexts----------------------------------------
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context)
+
     const [highlights, setHighlights] = useState([]);
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
@@ -163,21 +164,23 @@ export default function Highlights() {
             <ul>
                 {
                     highlights.length > 0 && highlights.map(h => {
-                        return (
+                        return (<div className="highlight-item">
+                            <Button variant="warning" className="small-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
+                            <Button className="small-button del-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                             <li 
                             key={h.id}
                             value={h.id}
                             >
-                                <Button className="small-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
+
                                 <pre>{h.highlight}</pre>
-                                <div className="indented">Book: {h.book === undefined ? "unspecified" : h.book.title || "unspecified" }</div>
+                                <div className="indented">
+                                    Book: {h.book === undefined ? "unspecified" : h.book.title || "unspecified" }
+                                </div>
                                 <div className="indented" data-value={h.id}>
                                     Tags: {(h.tags.length && h.tags.map(t => t.tag).join(', ')) || "none"}
-                                    <Button variant="primary" className="small-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
-
                                 </div>
                             </li>
-                        );
+                        </div>);
                     })
                 }
             </ul>

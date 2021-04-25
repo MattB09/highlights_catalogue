@@ -6,18 +6,22 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Books() {
+    // ---------------------- useStates and contexts ---------------------------
+    const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context);
+
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const { currentUser } = useContext(AuthContext);
-    const { state, dispatch } = useContext(Context);
     const [ books, setBooks ] = useState([]);
 
+    // ------------------------ useEffect  ------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
         setBooks(filterBooks(state.data));
     }, [state]);
 
+    // ------------------------ filtering ------------------------------------
     function setBookFilter(bId) {
         dispatch({type: 'setFilter', payload: {author: "", tag:"", book: bId}});
     }
@@ -34,19 +38,7 @@ export default function Books() {
         return data.books; 
     }
 
-    const deleteBook = async () => {
-        if (books.length === 1) dispatch({type: 'clearFilters'});
-        const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
-        dispatch({type: 'deleteBook', payload: deleted.data[0]});
-        setSelectedItem(null);
-        setDelModalShow(false);
-    }
-
-    const delClicked = (bookId) => {
-        setDelModalShow(true);
-        setSelectedItem(bookId);
-    }
-
+    // ------------------------ Add Book --------------------------------------
     async function submitFunc(e) {
         e.preventDefault();
         if (e.target.title.value === "") {
@@ -91,6 +83,29 @@ export default function Books() {
         </form>
     )
 
+    // ------------------------ Edit Book -------------------------------------
+    async function editBook() {
+        alert("editBook");
+    }
+
+    function editClicked(bookId) {
+        alert(`edit book clicked ${bookId}`);
+    }
+
+    // ------------------------ Delete Book ------------------------------------
+    const deleteBook = async () => {
+        if (books.length === 1) dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
+        dispatch({type: 'deleteBook', payload: deleted.data[0]});
+        setSelectedItem(null);
+        setDelModalShow(false);
+    }
+
+    const delClicked = (bookId) => {
+        setDelModalShow(true);
+        setSelectedItem(bookId);
+    }
+
     const areYouSure = (
         <>
             <p>Deleting this book will delete all of it's highlights. It cannot be undone!</p>
@@ -98,6 +113,7 @@ export default function Books() {
         </>
     )
 
+    // ---------------------- Book component return ---------------------------
     return (
         <div className="books filter-component">
             <h3>Books ({books.length || 0})</h3>
@@ -116,7 +132,8 @@ export default function Books() {
                     books.length > 0 && books.map(b => {
                         return (
                             <li className="filter-item" key={b.id}>
-                                <Button className="small-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
+                                <Button className="small-button" variant="warning" onClick={() => editClicked(b.id)}>Edit</Button>
+                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setBookFilter(b.id)}>
                                     <span className="book-title">{b.title}</span>
                                     {/* /* by <span className="book-author">{b.name || "unspecified"}</span> */}

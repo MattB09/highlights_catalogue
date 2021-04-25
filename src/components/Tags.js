@@ -6,18 +6,22 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Tags() {
+    // ------------------------- useState and context ----------------------------
+    const { currentUser } = useContext(AuthContext);
+    const { state, dispatch } = useContext(Context);
+    
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const { currentUser } = useContext(AuthContext);
-    const { state, dispatch } = useContext(Context);
     const [tags, setTags] = useState([]);
 
+    // ------------------------- useEffect ------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
         setTags(filterTags(state.data));
     }, [state.filters, state.data.tags]);
 
+    // ------------------------- filtering -------------------------------------
     function setTagFilter(tId) {
         dispatch({type: 'setFilter', payload: {author: "", tag: tId, book: ""}});
     }
@@ -45,19 +49,7 @@ export default function Tags() {
         return data.tags; 
     }
 
-    async function deleteTag() {
-        if (tags.length === 1) dispatch({type: 'clearFilters'});
-        const deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
-        dispatch({type: 'deleteTag', payload: deleted.data[0]});
-        setDelModalShow(false);
-        setSelectedItem(null)
-    }
-
-    function delClicked(tId) {
-        setDelModalShow(true);
-        setSelectedItem(tId);
-    }
-
+    // ------------------------- Add Tag --------------------------------------
     async function submitFunc(e) {
         e.preventDefault();
         if (e.target.tag.value === "") {
@@ -77,6 +69,29 @@ export default function Tags() {
         </form>
     )
 
+    // ------------------------- Edit  Tag --------------------------------------
+    async function EditTag() {
+        alert("edit tag");
+    }
+
+    function editClicked(tId) {
+        alert(`tag edit clicked ${tId}`);
+    }
+
+    // ------------------------- Delete Tag --------------------------------------
+    async function deleteTag() {
+        if (tags.length === 1) dispatch({type: 'clearFilters'});
+        const deleted = await axios.delete(`/api/${currentUser.uid}/tags/${selectedItem}`);
+        dispatch({type: 'deleteTag', payload: deleted.data[0]});
+        setDelModalShow(false);
+        setSelectedItem(null)
+    }
+
+    function delClicked(tId) {
+        setDelModalShow(true);
+        setSelectedItem(tId);
+    }
+
     const areYouSure = (
         <>
             <p>Deleting this tag will remove it from all highlights. It cannot be undone!</p>
@@ -84,6 +99,7 @@ export default function Tags() {
         </>
     )
 
+    // ------------------------- Tag component return  --------------------------------------
     return (
         <div className="tags filter-component">
             <h3>Tags ({tags.length || 0})</h3>
@@ -102,7 +118,8 @@ export default function Tags() {
                     tags.length > 0 && tags.map(t => {
                         return (
                             <li className="filter-item" key={t.id}>
-                                <Button className="small-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
+                                <Button className="small-button" variant="warning" onClick={() => editClicked(t.id)}>Edit</Button>
+                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
                                 <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
                             </li>
                         );
