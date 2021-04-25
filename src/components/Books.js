@@ -35,7 +35,6 @@ export default function Books() {
     }
 
     const deleteBook = async () => {
-        dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/books/${selectedItem}`);
         dispatch({type: 'deleteBook', payload: deleted.data[0]});
         setSelectedItem(null);
@@ -67,30 +66,27 @@ export default function Books() {
     }
 
     const bookForm = (
-        <form onSubmit={submitFunc}>
-            <label>
-                Title
-                <input name="title" type="text" placeholder="title" required />
-            </label>
-            <label>
-                Summary
-                <textarea name="summary" rows="3" columns="100" placeholder="Enter a summary..." />
-            </label>
-            <label>
-                Year published
-                <input name="year_published" type="number" placeholder="year published" maxLength="4" />
-            </label>
-            <label>
-                Year read
-                <input name="year_read" type="number" placeholder="year read" maxLength="4" />
-            </label>
-            <select name="author">
+        <form onSubmit={submitFunc} className="b-form">
+            <label for="book-title" className="title-label form-label">Title:</label>
+            <input id="book-title" className="title-input" name="title" type="text" placeholder="title" required />
+
+            <label for="summary" className="summary-label form-label">Summary:</label>
+            <textarea id="summary" className="summary-input" name="summary" rows="3" columns="100" placeholder="Enter a summary..." />
+            
+            <label for="published" className="published-label form-label">Year published:</label>
+            <input id="published" className="published-input" name="year_published" type="number" placeholder="year published" maxLength="4" />
+            
+            <label for="read" className="read-label form-label">Year read:</label>
+            <input id="read" className="read-input" name="year_read" type="number" placeholder="year read" maxLength="4" />
+            
+            <label for="author-select" className="author-label form-label">Author:</label>
+            <select id="author-select" className="author-select" name="author">
                 <option value="null">Select Author</option>
 				{state.data.authors && state.data.authors.map(a=> {
                     return <option key={a.id} value={a.id}>{a.name}</option>
                 })}
 			</select>
-            <Button variant="primary" type="submit">Save</Button>
+            <Button variant="primary" type="submit" className="b-save">Save</Button>
         </form>
     )
 
@@ -112,16 +108,17 @@ export default function Books() {
                 onHide={() => setAddModalShow(false)}
                 title="Add Book"
                 form={bookForm}
-                size="lg"
+                size="md"
             />
             <ul>
                 {
                     books.length > 0 && books.map(b => {
                         return (
                             <li className="filter-item" key={b.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setBookFilter(b.id)}>
-                                    <span className="book-title">{b.title}</span> by <span className="book-author">{b.name || "unspecified"}</span>
+                                    <span className="book-title">{b.title}</span>
+                                    {/* /* by <span className="book-author">{b.name || "unspecified"}</span> */}
                                 </div>
                             </li>
                         );

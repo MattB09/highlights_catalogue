@@ -39,7 +39,6 @@ export default function Authors() {
     }
 
     async function deleteAuthor() {
-        dispatch({type: 'clearFilters'});
         const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
         dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
         setDelModalShow(false);
@@ -63,12 +62,10 @@ export default function Authors() {
     }
 
     const authForm = (
-        <form onSubmit={addAuthor}>
-        <label>
-            Author
-            <input name="author" type="text" placeholder="Author's name" required />
-        </label>
-        <Button variant="primary" type="submit">Save</Button>
+        <form onSubmit={addAuthor} className="simple-form">
+        <label for="author-name" className='s-label form-label'>Author:</label>
+        <input id="author-name" className='s-input' name="author" type="text" placeholder="Author's name" required />
+        <Button variant="primary" type="submit" className="s-save">Save</Button>
     </form>    
     )
 
@@ -90,7 +87,7 @@ export default function Authors() {
                 onHide={() => setAddModalShow(false)}
                 title="Add Author"
                 form={authForm}
-                size="md"
+                size="sm"
             />
             <ul>
                 {
@@ -98,7 +95,7 @@ export default function Authors() {
                     if (a) {
                         return (
                             <li className="filter-item" key={a.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
                                 <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                             </li>
                         );

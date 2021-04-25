@@ -70,12 +70,10 @@ export default function Tags() {
     }
 
     const tagForm = (
-        <form onSubmit={submitFunc}>
-            <label>
-                Tag
-                <input name="tag" type="text" placeholder="Tag" required />
-            </label>
-            <Button variant="primary" type="submit">Save</Button>
+        <form onSubmit={submitFunc} className='simple-form'>
+            <label for="tag-input" className='s-label form-label'>Tag: </label>
+            <input id="tag-input" name="tag" className='s-input' type="text" placeholder="Tag" required />
+            <Button variant="primary" type="submit" className='s-save'>Save</Button>
         </form>
     )
 
@@ -97,14 +95,14 @@ export default function Tags() {
                 onHide={() => setAddModalShow(false)}
                 title="Add Tag"
                 form={tagForm}
-                size="md"
+                size="sm"
             />
             <ul>
                 {
                     tags.length > 0 && tags.map(t => {
                         return (
                             <li className="filter-item" key={t.id}>
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
                                 <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
                             </li>
                         );

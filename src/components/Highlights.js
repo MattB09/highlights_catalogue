@@ -41,18 +41,18 @@ export default function Highlights() {
     // ------------------ Add highlight --------------------------------------
     const highlightForm = (
         <form onSubmit={submitFunc} className="h-form">
-            <label className="h-label h-form-label">Highlight:</label>
-            <textarea className="h-input" name="highlight" rows="5" columns="70" placeholder="Enter the highlight here" required />
+            <label className="h-label form-label" for="h-textarea">Highlight:</label>
+            <textarea className="h-input" id="h-textarea" name="highlight" rows="5" columns="70" placeholder="Enter the highlight here" required />
             
-            <label className="t-label h-form-label">Tags:</label>
-            <select name="tag" className="t-select" value={tagSelect} onChange={(event)=>setTagSelect(event.target.value)}>
+            <label className="t-label form-label" for="tag-select">Tags:</label>
+            <select name="tag" id="tag-select" className="t-select" value={tagSelect} onChange={(event)=>setTagSelect(event.target.value)}>
                 <option value="">Select Tag</option>
-                {state.data.tags.length > 0 && state.data.tags.filter(t => addedTags.find(added => added.id == t.id) === undefined)
+                {state.data.tags.length > 0 && state.data.tags.filter(t => addedTags.find(added => added.id === t.id) === undefined)
                     .map(t => {
                         return <option key={t.id} value={t.id}>{t.tag}</option>
                 })}
             </select>
-            <p className="t-message">Click a tag to remove it</p>
+            { addedTags.length > 0 && <p className="t-message">Click a tag to remove it</p> }
             <Button variant="primary" className="t-add" onClick={addTagClicked}>Add Tag</Button>
             <div className="t-display-container">
                 {addedTags.length > 0 && addedTags.map(t => (
@@ -60,8 +60,8 @@ export default function Highlights() {
                 ))}
             </div>
 
-            <label className="b-label h-form-label">Book:</label>
-            <select name="book" className="b-select">
+            <label className="b-label form-label" for="book-select">Book:</label>
+            <select name="book" className="b-select" id="book-select">
                 <option value="null">Select Book</option>
 				{state.data.books.length > 0 && state.data.books.map(b => {
                     return <option key={b.id} value={b.id}>{b.title}</option>
@@ -91,10 +91,10 @@ export default function Highlights() {
         setAddModalShow(false);
     }
 
-    function addTagClicked(e) {
+    function addTagClicked() {
         if (tagSelect === "") return;
         let tagCopy = [...addedTags]
-        addSorted(state.data.tags.find((t) => t.id == tagSelect), tagCopy, "tag");
+        addSorted(state.data.tags.find((t) => t.id === Number(tagSelect)), tagCopy, "tag");
         setAddedTags(tagCopy);
     }
 
@@ -167,12 +167,12 @@ export default function Highlights() {
                             key={h.id}
                             value={h.id}
                             >
-                                <Button className="delete-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
+                                <Button className="small-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                                 <pre>{h.highlight}</pre>
                                 <div className="indented">Book: {h.book === undefined ? "unspecified" : h.book.title || "unspecified" }</div>
                                 <div className="indented" data-value={h.id}>
                                     Tags: {(h.tags.length && h.tags.map(t => t.tag).join(', ')) || "none"}
-                                    <Button variant="primary" className="delete-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
+                                    <Button variant="primary" className="small-button edit-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
 
                                 </div>
                             </li>
