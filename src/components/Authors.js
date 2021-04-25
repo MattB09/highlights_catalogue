@@ -108,17 +108,12 @@ export default function Authors() {
             />
             <ul>
                 {
-                authors.length > 0 && authors.map(a => { 
-                    if (a) {
-                        return (
-                            <li className="filter-item" key={a.id}>
-                                <Button className="small-button" variant="warning" onClick={() => editClicked(a.id)}>Edit</Button>
-                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
-                                <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
-                            </li>
-                        );
-                    }
-                    return null;
+                authors.length > 0 && authors.map(a => {
+                    return a ? <li className="filter-item" key={a.id}>
+                        <Button className="small-button" variant="warning" onClick={() => editClicked(a.id)}>Edit</Button>
+                        <Button className="small-button del-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                        <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
+                    </li> : null;
                 })
                 }
             </ul>
@@ -130,5 +125,5 @@ export default function Authors() {
                 size="sm"
             />    
         </div>
-    )
+    );
 }

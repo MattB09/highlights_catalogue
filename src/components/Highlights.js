@@ -164,7 +164,7 @@ export default function Highlights() {
             <ul>
                 {
                     highlights.length > 0 && highlights.map(h => {
-                        return (<div className="highlight-item">
+                        return (<div className="highlight-item" key={h.id}>
                             <Button variant="warning" className="small-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
                             <Button className="small-button del-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                             <li 

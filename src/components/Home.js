@@ -41,7 +41,7 @@ export default function Home() {
 				? 
 					(<>
 						<div className="clear-div">
-							<button id="clear-button" onClick={clearFilters}>Clear Filters</button>
+							<Button id="clear-button" variant="primary" onClick={clearFilters}>Clear Filters</Button>
 						</div>
 						<div id="filters-container">
 							<Authors />

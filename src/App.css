@@ -14,17 +14,11 @@ h3 {
   font-size: 25px;
 }
 
-.btn, button{
+.btn {
   background-color: #8E8FA4;
   color: #210808;
   font-size: 13px;
   border-radius: 5%;
-}
-
-button:hover {
-  cursor: pointer;
-  background-color: #05404C;
-  color: #E7ECEE;
 }
 
 #filters-container {
@@ -46,6 +40,7 @@ button:hover {
   display: inline-block;
   padding: 10px;
   margin: 1%;
+  border-radius: 3px;
 }
 
 .filter-component ul {
@@ -71,6 +66,8 @@ button:hover {
   margin-bottom: 20px;
   padding: 10px 25px;
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 #highlights {
@@ -127,6 +124,8 @@ pre {
   height: 20px;
   padding: 0px;
   margin: 1px 2px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .del-button {

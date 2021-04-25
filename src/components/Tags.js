@@ -12,8 +12,10 @@ export default function Tags() {
     
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [tags, setTags] = useState([]);
+    const [editTagVal, setEditTagVal] = useState(null)
 
     // ------------------------- useEffect ------------------------------------
     useEffect(() => {
@@ -70,13 +72,34 @@ export default function Tags() {
     )
 
     // ------------------------- Edit  Tag --------------------------------------
-    async function EditTag() {
-        alert("edit tag");
+    async function editTag(e) {
+        e.preventDefault();
+        if (e.target.tag.value === "") {
+            alert("field must not be blank");
+            return;
+        }
+        const added = await axios.put(`/api/${currentUser.uid}/tags/${selectedItem}`, {tag: e.target.tag.value});
+        dispatch({type: 'editTag', payload: added.data[0]});
+        setEditModalShow(false);
+        setSelectedItem(null);
+        setEditTagVal(null);
     }
 
     function editClicked(tId) {
-        alert(`tag edit clicked ${tId}`);
+        setSelectedItem(Number(tId));
+        let tagVal = tags.find(t => t.id === Number(tId)).tag
+        setEditTagVal(tagVal);
+        setEditModalShow(true);
     }
+
+    const editTagForm = (
+        <form onSubmit={editTag} className='simple-form'>
+            <label for="tag-input" className='s-label form-label'>Tag:</label>
+            <input id="tag-input" name="tag" className='s-input' type="text" required 
+                value={editTagVal} onChange={(e) => setEditTagVal(e.target.value)} />
+            <Button variant="primary" type="submit" className='s-save'>Save</Button>
+        </form>
+    )
 
     // ------------------------- Delete Tag --------------------------------------
     async function deleteTag() {
@@ -131,6 +154,13 @@ export default function Tags() {
                 onHide={() => setDelModalShow(false)}
                 title="Delete Tag"
                 form={areYouSure}
+                size="sm"
+            />
+            <ModalForm
+                show={editModalShow}
+                onHide={() => setEditModalShow(false)}
+                title="Edit Tag"
+                form={editTagForm}
                 size="sm"
             />
         </div>

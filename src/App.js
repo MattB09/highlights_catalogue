@@ -55,6 +55,20 @@ const reducer = (state, action) => {
       let tagsCopy = [...state.data.tags];
       addSorted(action.payload, tagsCopy, "tag");
       return { filters: state.filters, data: {...state.data, tags: tagsCopy}};
+    case 'editTag':
+      let tagsCopy2 = [...state.data.tags];
+      let hCopy2 = [...state.data.highlights];
+      hCopy2.forEach((h) => {
+        let index = h.tags.findIndex(tag => tag.id === action.payload.id);
+        if (index > -1) {
+          h.tags.splice(index, 1);
+          addSorted(action.payload, h.tags, "tag")
+        }
+      })
+      let tIndex2 = tagsCopy2.findIndex((tag) => tag.id === action.payload.id);
+      tagsCopy2.splice(tIndex2, 1);
+      addSorted(action.payload, tagsCopy2, "tag");
+      return { ...state, data: {...state.data, highlights: hCopy2, tags: tagsCopy2}};
     case 'deleteTag':
       // remove tag from highlights
       let tagsCopy1 = [...state.data.tags];
