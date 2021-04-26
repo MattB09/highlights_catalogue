@@ -49,6 +49,17 @@ const reducer = (state, action) => {
       let booksCopy = [...state.data.books];
       addSorted(action.payload, booksCopy, "title");
       return { filters: state.filters, data: { ...state.data, books: booksCopy}}
+    case 'editBook':
+      let booksCopy2 = [...state.data.books];
+      let hCopy3 = [...state.data.highlights];
+      hCopy3.forEach(h => {
+        if (h.book.id === action.payload.id) h.book = action.payload;
+      })
+      let bIndex1 = booksCopy2.findIndex((book) => book.id === action.payload.id);
+      console.log("book index", bIndex1);
+      booksCopy2.splice(bIndex1, 1);
+      addSorted(action.payload, booksCopy2, "title");
+      return { ...state, data: {...state.data, highlights: hCopy3, books: booksCopy2}};
     case 'deleteBook':
       let booksCopy1 = [...state.data.books];
       let hCopy = [...state.data.highlights].filter(h => h.book_id !== action.payload.id);

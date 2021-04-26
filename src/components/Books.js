@@ -12,13 +12,16 @@ export default function Books() {
 
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [ books, setBooks ] = useState([]);
+    const [editBookVal, setEditBookVal] = useState({title: "", summary:"", year_published:"", year_read:"", author_id:""});
 
     // ------------------------ useEffect  ------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
         setBooks(filterBooks(state.data));
+        console.log(state.data);
     }, [state]);
 
     // ------------------------ filtering ------------------------------------
@@ -84,13 +87,58 @@ export default function Books() {
     )
 
     // ------------------------ Edit Book -------------------------------------
-    async function editBook() {
-        alert("editBook");
+    async function editBook(e) {
+        e.preventDefault();
+        let editedBook = {
+            title: editBookVal.title,
+            summary: editBookVal.summary,
+            year_published: editBookVal.year_published || null,
+            year_read: editBookVal.year_read|| null,
+            author_id: parseInt(editBookVal.author_id) || null,
+        }
+        const edited = await axios.put(`/api/${currentUser.uid}/books/${selectedItem}`, editedBook);
+        console.log(edited);
+        edited.data[0].name = state.data.authors.find(auth => auth.id == editedBook.author_id).name;
+        dispatch({type: 'editBook', payload: edited.data[0]});
+        setEditModalShow(false);
+        setSelectedItem(null);
     }
 
     function editClicked(bookId) {
-        alert(`edit book clicked ${bookId}`);
+        setSelectedItem(Number(bookId));
+        setEditBookVal(books.find(b => b.id === Number(bookId)));
+        setEditModalShow(true)
     }
+
+    const editBookForm = (
+        <form onSubmit={editBook} className="b-form">
+            <label for="book-title" className="title-label form-label" >Title:</label>
+            <input id="book-title" className="title-input" name="title" type="text" placeholder="title" required 
+                value={editBookVal.title} onChange={(e) => setEditBookVal({...editBookVal, title: e.target.value})}/>
+
+            <label for="summary" className="summary-label form-label">Summary:</label>
+            <textarea id="summary" className="summary-input" name="summary" rows="3" columns="100" placeholder="Enter a summary..." 
+                value={editBookVal.summary} onChange={(e) => setEditBookVal({...editBookVal, summary: e.target.value})}/>
+            
+            <label for="published" className="published-label form-label">Year published:</label>
+            <input id="published" className="published-input" name="year_published" type="number" placeholder="year published" maxLength="4" 
+                value={editBookVal.year_published} onChange={(e) => setEditBookVal({...editBookVal, year_published: e.target.value})}/>
+            
+            <label for="read" className="read-label form-label">Year read:</label>
+            <input id="read" className="read-input" name="year_read" type="number" placeholder="year read" maxLength="4" 
+                value={editBookVal.year_read} onChange={(e) => setEditBookVal({...editBookVal, year_read: e.target.value})}/>
+            
+            <label for="author-select" className="author-label form-label">Author:</label>
+            <select id="author-select" className="author-select" name="author"
+                value={editBookVal.author_id} onChange={(e) => setEditBookVal({...editBookVal, author_id: e.target.value})}>
+                <option value="null">Select Author</option>
+				{state.data.authors && state.data.authors.map(a=> {
+                    return <option key={a.id} value={a.id}>{a.name}</option>
+                })}
+			</select>
+            <Button variant="primary" type="submit" className="b-save">Save</Button>
+        </form>
+    )
 
     // ------------------------ Delete Book ------------------------------------
     const deleteBook = async () => {
@@ -149,6 +197,13 @@ export default function Books() {
                 title="Delete Book"
                 form={areYouSure}
                 size="sm"
+            />
+            <ModalForm 
+                show={editModalShow}
+                onHide={() => setEditModalShow(false)}
+                title="Edit Book"
+                form={editBookForm}
+                size="md"
             /> 
         </div>
     )
