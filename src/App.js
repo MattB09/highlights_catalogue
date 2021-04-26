@@ -27,8 +27,13 @@ const reducer = (state, action) => {
       return { filters: state.filters, data: { ...state.data, authors: authorsCopy}}
     case 'editAuthor':
       let authorsCopy1 = [...state.data.authors];
+      let bCopy1 = [...state.data.books];
+      bCopy1.forEach(b => {
+        if (b.author_id === action.payload.id) b.name = action.payload.name;
+      });
       let ind = authorsCopy1.findIndex((auth) => auth.id === action.payload.id);
-      authorsCopy1.splice(ind, 1, action.payload);
+      authorsCopy1.splice(ind, 1);
+      addSorted(action.payload, authorsCopy1, "name");
       return { ...state, data: { ...state.data, authors: authorsCopy1}}
     case 'deleteAuthor':
       let authorsCopy2 = [...state.data.authors];
@@ -44,6 +49,17 @@ const reducer = (state, action) => {
       let booksCopy = [...state.data.books];
       addSorted(action.payload, booksCopy, "title");
       return { filters: state.filters, data: { ...state.data, books: booksCopy}}
+    case 'editBook':
+      let booksCopy2 = [...state.data.books];
+      let hCopy3 = [...state.data.highlights];
+      hCopy3.forEach(h => {
+        if (h.book.id === action.payload.id) h.book = action.payload;
+      })
+      let bIndex1 = booksCopy2.findIndex((book) => book.id === action.payload.id);
+      console.log("book index", bIndex1);
+      booksCopy2.splice(bIndex1, 1);
+      addSorted(action.payload, booksCopy2, "title");
+      return { ...state, data: {...state.data, highlights: hCopy3, books: booksCopy2}};
     case 'deleteBook':
       let booksCopy1 = [...state.data.books];
       let hCopy = [...state.data.highlights].filter(h => h.book_id !== action.payload.id);
@@ -55,6 +71,20 @@ const reducer = (state, action) => {
       let tagsCopy = [...state.data.tags];
       addSorted(action.payload, tagsCopy, "tag");
       return { filters: state.filters, data: {...state.data, tags: tagsCopy}};
+    case 'editTag':
+      let tagsCopy2 = [...state.data.tags];
+      let hCopy2 = [...state.data.highlights];
+      hCopy2.forEach((h) => {
+        let index = h.tags.findIndex(tag => tag.id === action.payload.id);
+        if (index > -1) {
+          h.tags.splice(index, 1);
+          addSorted(action.payload, h.tags, "tag")
+        }
+      })
+      let tIndex2 = tagsCopy2.findIndex((tag) => tag.id === action.payload.id);
+      tagsCopy2.splice(tIndex2, 1);
+      addSorted(action.payload, tagsCopy2, "tag");
+      return { ...state, data: {...state.data, highlights: hCopy2, tags: tagsCopy2}};
     case 'deleteTag':
       // remove tag from highlights
       let tagsCopy1 = [...state.data.tags];
@@ -72,6 +102,12 @@ const reducer = (state, action) => {
       let highlightsCopy = [...state.data.highlights];
       addSorted(action.payload, highlightsCopy, "highlight");
       return { filters: state.filters, data: {...state.data, highlights: highlightsCopy}};
+    case 'editHighlight':
+      let highlightsCopy2 = [...state.data.highlights];
+      let hIndex1 = highlightsCopy2.findIndex(h => h.id === action.payload.id);
+      highlightsCopy2.splice(hIndex1, 1);
+      addSorted(action.payload, highlightsCopy2, "highlight");
+      return { filters: state.filters, data: {...state.data, highlights: highlightsCopy2}};
     case 'deleteHighlight':
       let highlightsCopy1 = [...state.data.highlights];
       let hIndex = highlightsCopy1.findIndex((h) => h.id === action.payload.id);

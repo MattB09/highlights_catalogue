@@ -18,7 +18,7 @@ export default function ModalForm(props) {
                 {props.form}
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.onHide}>Cancel</Button>
+                <Button variant='warning' onClick={props.onHide}>Cancel</Button>
             </Modal.Footer>
         </Modal>
     )

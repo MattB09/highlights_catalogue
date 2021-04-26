@@ -34,14 +34,14 @@ export default function Home() {
       <div className="headerContainer">
         <img className="header logo" src={logo} alt="MyLights logo" />
       	<p>logged in as {currentUser.email.split('@')[0]}</p>
-        <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Sign out</Button>
+        <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Log out</Button>
     	</div>
 			{
         state.data !== undefined && Object.keys(state.data.highlights).length
 				? 
 					(<>
 						<div className="clear-div">
-							<button id="clear-button" onClick={clearFilters}>Clear Filters</button>
+							<Button id="clear-button" variant="primary" onClick={clearFilters}>Clear Filters</Button>
 						</div>
 						<div id="filters-container">
 							<Authors />

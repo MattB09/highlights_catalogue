@@ -14,9 +14,11 @@ h3 {
   font-size: 25px;
 }
 
-.btn, button{
+.btn {
   background-color: #8E8FA4;
   color: #210808;
+  font-size: 13px;
+  border-radius: 5%;
 }
 
 #filters-container {
@@ -38,6 +40,7 @@ h3 {
   display: inline-block;
   padding: 10px;
   margin: 1%;
+  border-radius: 3px;
 }
 
 .filter-component ul {
@@ -51,7 +54,7 @@ h3 {
 
 .add-button {
   float: right;
-  margin-right: 10%;
+  margin-right: 1%;
 }
 
 .headerContainer {
@@ -63,6 +66,8 @@ h3 {
   margin-bottom: 20px;
   padding: 10px 25px;
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 #highlights {
@@ -81,6 +86,7 @@ h3 {
 #highlights li {
   list-style: none;
   margin-bottom: 20px;
+  flex-grow: 1;
 }
 
 #highlights li:after {
@@ -88,6 +94,10 @@ h3 {
   display: block;
   margin-top: 15px;
   border-bottom: 1px solid #05404c3a;
+}
+
+.highlight-item {
+  display: flex;
 }
 
 pre {
@@ -113,11 +123,13 @@ pre {
   width: 20px;
   height: 20px;
   padding: 0px;
-  margin: 1px 7px 1px 2px;
+  margin: 1px 2px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
-.edit-button {
-  margin-left: 7px;
+.del-button {
+  margin-right: 7px;
 }
 
 .filter-component li:hover {
