@@ -21,7 +21,7 @@ export default function Tags() {
     useEffect(() => {
         if (state.data === undefined) return;
         setTags(filterTags(state.data));
-    }, [state.filters, state.data.tags]);
+    }, [state.filters, state.data.tags, state.data.highlights]);
 
     // ------------------------- filtering -------------------------------------
     function setTagFilter(tId) {
