@@ -102,6 +102,12 @@ const reducer = (state, action) => {
       let highlightsCopy = [...state.data.highlights];
       addSorted(action.payload, highlightsCopy, "highlight");
       return { filters: state.filters, data: {...state.data, highlights: highlightsCopy}};
+    case 'editHighlight':
+      let highlightsCopy2 = [...state.data.highlights];
+      let hIndex1 = highlightsCopy2.findIndex(h => h.id === action.payload.id);
+      highlightsCopy2.splice(hIndex1, 1);
+      addSorted(action.payload, highlightsCopy2, "highlight");
+      return { filters: state.filters, data: {...state.data, highlights: highlightsCopy2}};
     case 'deleteHighlight':
       let highlightsCopy1 = [...state.data.highlights];
       let hIndex = highlightsCopy1.findIndex((h) => h.id === action.payload.id);

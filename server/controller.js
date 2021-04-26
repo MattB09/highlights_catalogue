@@ -172,6 +172,17 @@ const editBook = async (request, response) => {
 }
 
 const editHighlight = async (request, response) => {
+    // for now delete all existing tags and then replace them.
+    await db("highlights_tags").where({
+        highlight_id: request.params.id
+    }).del();
+    // add all the highlight_tags
+    for (const tag of request.body.tags) {
+        await db('highlights_tags').insert({
+            highlight_id: request.params.id,
+            tag_id: tag.id
+        });
+    }
     const editedHighlight = {
         highlight: request.body.highlight,
         reviewed: request.body.reviewed,

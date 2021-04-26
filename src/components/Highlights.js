@@ -18,6 +18,7 @@ export default function Highlights() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [addedTags, setAddedTags] = useState([]);
     const [tagSelect, setTagSelect] = useState("");
+    const [editHighlightVal, setEditHighlightVal] = useState({highlight: "", book_id:"", book:""});
 
     // ------------------ UseEffect----------------------------------------
     useEffect(() => {
@@ -100,6 +101,68 @@ export default function Highlights() {
         setAddedTags(tagCopy);
     }
 
+    // -------------------------------- Editing Highlight ----------------------------------
+    async function editHighlight(e){
+        e.preventDefault();
+        let editedHighlight = {
+            highlight: editHighlightVal.highlight,
+            book_id: parseInt(editHighlightVal.book_id),
+            reviewed: true,
+            tags: addedTags
+        }
+        let edited = await axios.put(`/api/${currentUser.uid}/highlights/${selectedItem}`, editedHighlight)
+        console.log(edited.data);
+        let book = state.data.books.find((book) => book.id === parseInt(editHighlightVal.book_id));
+        edited = {...edited.data[0], book, tags: addedTags};
+        dispatch({type: 'editHighlight', payload: edited});
+        setAddedTags([]);
+        setTagSelect("");
+        setEditModalShow(false);
+    }
+    
+    function editHighlightClicked(hId) {
+        let selected = highlights.find(h => h.id === Number(hId));
+        console.log(selected);
+        setEditModalShow(true);
+        setSelectedItem(Number(hId))
+        setEditHighlightVal({...selected, book_id: selected.book.id});
+        setAddedTags(selected.tags);
+    }
+
+    const editHighlightForm = (
+        <form onSubmit={editHighlight} className="h-form">
+            <label className="h-label form-label" for="h-textarea">Highlight:</label>
+            <textarea className="h-input" id="h-textarea" name="highlight" rows="5" columns="70" placeholder="Enter the highlight here" required 
+                value={editHighlightVal.highlight} onChange={(e) => setEditHighlightVal({...editHighlightVal, highlight: e.target.value})}/>
+            
+            <label className="t-label form-label" for="tag-select">Tags:</label>
+            <select name="tag" id="tag-select" className="t-select" value={tagSelect} onChange={(event)=>setTagSelect(event.target.value)}>
+                <option value="">Select Tag</option>
+                {state.data.tags.length > 0 && state.data.tags.filter(t => addedTags.find(added => added.id === t.id) === undefined)
+                    .map(t => {
+                        return <option key={t.id} value={t.id}>{t.tag}</option>
+                })}
+            </select>
+            { addedTags.length > 0 && <p className="t-message">Click a tag to remove it</p> }
+            <Button variant="primary" className="t-add" onClick={addTagClicked}>Add Tag</Button>
+            <div className="t-display-container">
+                {addedTags.length > 0 && addedTags.map(t => (
+                    <div className="tag-list" onClick={()=>setAddedTags(addedTags.filter(tag => tag.id !== t.id))}>{t.tag}</div>    
+                ))}
+            </div>
+
+            <label className="b-label form-label" for="book-select">Book:</label>
+            <select name="book" className="b-select" id="book-select"
+                value={editHighlightVal.book_id} onChange={(e) => setEditHighlightVal({...editHighlightVal, book_id: e.target.value})}>
+                <option value="null">Select Book</option>
+				{state.data.books.length > 0 && state.data.books.map(b => {
+                    return <option key={b.id} value={b.id}>{b.title}</option>
+                })}
+			</select>
+            <Button variant="primary" type="submit" className="h-save">Save</Button>
+        </form>
+    )
+
     // ------------------ Delete highlight ------------------------------------
     async function deleteHighlight() {
         const deleted = await axios.delete(`/api/${currentUser.uid}/highlights/${selectedItem}`);
@@ -120,28 +183,6 @@ export default function Highlights() {
         </>
     )
 
-    // -------------------------------- Editing Highlight ----------------------------------
-    function editTagClicked(hId) {
-        setEditModalShow(true);
-        setSelectedItem(hId)
-    }
-
-    async function editFunc(e){
-        console.log("selected", selectedItem);
-        setEditModalShow(false);
-    }
-
-    const editTagForm = (
-        <div className="edit-tag-container">
-            <ul class="tag-list">
-                {highlights.length && highlights.filter(h => h.id === selectedItem).map(h => {
-                    return (<li>{h.name}</li>)
-                })}
-            </ul>
-            <p>hello</p>
-            <Button onClick={editFunc}>do something</Button>
-        </div>
-    )
 
     // ------------------ Highlight Component Return ---------------------------------
     return (
@@ -165,7 +206,7 @@ export default function Highlights() {
                 {
                     highlights.length > 0 && highlights.map(h => {
                         return (<div className="highlight-item" key={h.id}>
-                            <Button variant="warning" className="small-button" onClick={()=> editTagClicked(h.id)}>Edit</Button>
+                            <Button variant="warning" className="small-button" onClick={()=> editHighlightClicked(h.id)}>Edit</Button>
                             <Button className="small-button del-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
                             <li 
                             key={h.id}
@@ -189,13 +230,17 @@ export default function Highlights() {
 				onHide={() => setDelModalShow(false)}
 				title="Delete Highlight"
 				form={areYouSure}
-				size="md"
+				size="sm"
 			/>
 			<ModalForm
 				show={editModalShow}
-				onHide={() => setEditModalShow(false)}
-				title="Edit Tags"
-				form={editTagForm}
+				onHide={() => {
+                    setAddModalShow(false)
+                    setAddedTags([]);
+                    setTagSelect("");
+                }}
+				title="Edit Highlight"
+				form={editHighlightForm}
 				size="md"
 			/>
         </div>
