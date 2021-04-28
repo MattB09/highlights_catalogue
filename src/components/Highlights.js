@@ -235,9 +235,9 @@ export default function Highlights() {
 			<ModalForm
 				show={editModalShow}
 				onHide={() => {
-                    setAddModalShow(false)
-                    setAddedTags([]);
+                    setEditModalShow(false)
                     setTagSelect("");
+                    setAddedTags([]);
                 }}
 				title="Edit Highlight"
 				form={editHighlightForm}
