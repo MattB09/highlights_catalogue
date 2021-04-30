@@ -22,6 +22,7 @@ export default function Home() {
 	async function loadData() {
 		const data = await axios.get(`/api/${currentUser.uid}/all`);
 		dispatch({type: 'setContext', payload: data.data})
+		console.log(data.data);
 	}
 
 	// clearfilters
@@ -37,7 +38,7 @@ export default function Home() {
         <Button variant="primary" className="header" onClick={()=> firebase.auth().signOut()}>Log out</Button>
     	</div>
 			{
-        state.data !== undefined && Object.keys(state.data.highlights).length
+        state.data !== undefined
 				? 
 					(<>
 						<div className="clear-div">
