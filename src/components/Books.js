@@ -56,7 +56,7 @@ export default function Books() {
             author_id: parseInt(e.target.author.value) || null,
         }
         const added = await axios.post(`/api/${currentUser.uid}/books`, newBook);
-        added.data[0].name = state.data.authors.find(auth => auth.id === newBook.author_id).name;
+        added.data[0].name = state.data.authors.find(auth => auth.id === newBook.author_id).name || null;
         dispatch({type: 'addBook', payload: added.data[0]});
         setAddModalShow(false);
     }
