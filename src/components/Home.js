@@ -22,7 +22,6 @@ export default function Home() {
 	async function loadData() {
 		const data = await axios.get(`/api/${currentUser.uid}/all`);
 		dispatch({type: 'setContext', payload: data.data})
-		console.log(data.data);
 	}
 
 	// clearfilters

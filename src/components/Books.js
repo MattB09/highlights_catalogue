@@ -21,7 +21,6 @@ export default function Books() {
     useEffect(() => {
         if (state.data === undefined) return;
         setBooks(filterBooks(state.data));
-        console.log(state.data);
     }, [state]);
 
     // ------------------------ filtering ------------------------------------
@@ -97,7 +96,6 @@ export default function Books() {
             author_id: parseInt(editBookVal.author_id) || null,
         }
         const edited = await axios.put(`/api/${currentUser.uid}/books/${selectedItem}`, editedBook);
-        console.log(edited);
         edited.data[0].name = state.data.authors.find(auth => auth.id == editedBook.author_id).name;
         dispatch({type: 'editBook', payload: edited.data[0]});
         setEditModalShow(false);

@@ -111,7 +111,6 @@ export default function Highlights() {
             tags: addedTags
         }
         let edited = await axios.put(`/api/${currentUser.uid}/highlights/${selectedItem}`, editedHighlight)
-        console.log(edited.data);
         let book = state.data.books.find((book) => book.id === parseInt(editHighlightVal.book_id));
         edited = {...edited.data[0], book, tags: addedTags};
         dispatch({type: 'editHighlight', payload: edited});
@@ -121,8 +120,6 @@ export default function Highlights() {
     }
     
     function editHighlightClicked(hId) {
-        let selected = highlights.find(h => h.id === Number(hId));
-        console.log(selected);
         setEditModalShow(true);
         setSelectedItem(Number(hId))
         setEditHighlightVal({...selected, book_id: selected.book.id});
