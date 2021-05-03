@@ -4,12 +4,26 @@ MyLights is a web app that lets you manage and catalogue your highlighted passag
 
 Users each have their own account.
 
+Single page app
+<img src="/img/Screenshot_Full.PNG" alt="Screenshot of whole page" />
+
+Filter on author, book, or tag
+<img src="/img/Filter.PNG" alt="Filtering" />
+
+Modal forms so you never have to leave the page
+<img src="/img/Add Book.PNG" alt="Modal forms" />
+
 ## How to use the app (for users)
 Visit the url: https://highlights-catalogue.herokuapp.com/ and sign up with email and password. Start adding your authors, books, tags, and highlights! If you're a kindle user there's two ways to access your highlights and notes by book.
 1. Log into your kindle account at https://read.amazon.com/notebook. From there you can see your highlights and notes by book. 
 1. In your kindle, go to a book and open the menu. There's an option to send yourself the highlights by email. The email will contain both pdf and csv files with your highlights.
 
 From there, I like to add them to the app one by one, which is my way of reviewing the book and reflecting on what I've read.
+
+## Upcoming features
+- Search for highlights
+- Upload kindle csv file to bulk upload highlights.
+- Login with google account
 
 ## How to download the app (for developers)
 1. Clone the repo and ```npm install```
@@ -25,10 +39,9 @@ From there, I like to add them to the app one by one, which is my way of reviewi
 ## Technology used
 * Postgres Database
 * Knex for database migrations, seeding, connections
-* NodeJS and express server for backend
+* NodeJS and Express server for backend with RESTful API
 * React front end
-* Firebase for login
+* Firebase for authentication
 
 ### Database schema 
-
 ![Database Schema](/img/SchemaDiagram.PNG)
