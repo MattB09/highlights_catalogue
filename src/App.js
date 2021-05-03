@@ -56,7 +56,6 @@ const reducer = (state, action) => {
         if (h.book.id === action.payload.id) h.book = action.payload;
       })
       let bIndex1 = booksCopy2.findIndex((book) => book.id === action.payload.id);
-      console.log("book index", bIndex1);
       booksCopy2.splice(bIndex1, 1);
       addSorted(action.payload, booksCopy2, "title");
       return { ...state, data: {...state.data, highlights: hCopy3, books: booksCopy2}};
