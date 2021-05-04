@@ -56,11 +56,7 @@ export default function Authors() {
         dispatch({type: 'setFilter', payload: {book: "", tag: "", author: aId}});
     }
 
-<<<<<<< Updated upstream
-    // ------------------------- Add Author -----------------------------------
-=======
     // -------------------- Add Author -----------------------------
->>>>>>> Stashed changes
     async function addAuthor(e) {
         e.preventDefault();
         if (e.target.author.value === "") {
