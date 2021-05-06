@@ -6,14 +6,10 @@ import { Context } from '../App';
 import axios from "axios";
 
 export default function Authors() {
-<<<<<<< Updated upstream
     // ------------------------- useStates and useContext ------------------------
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context);
     
-=======
-    // ---------------------- useStates ---------------------
->>>>>>> Stashed changes
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
     const [editModalShow, setEditModalShow] = useState(false);
@@ -21,21 +17,13 @@ export default function Authors() {
     const [authors, setAuthors] = useState([]);
     const [editAuthorVal, setEditAuthorVal] = useState(null);
 
-<<<<<<< Updated upstream
     // ------------------------- useEffect -------------------------------------
-=======
-    // -------------------- useEffect -----------------------------
->>>>>>> Stashed changes
     useEffect(() => {
         if (state.data === undefined) return;
         setAuthors(filterAuthors(state.data));
     }, [state.filters, state.data.authors]);
 
-<<<<<<< Updated upstream
     // ------------------------- filtering -----------------------------------
-=======
-    // -------------------- filtering-----------------------------
->>>>>>> Stashed changes
     function filterAuthors(data) {
         if (state.filters.author !== "") return [data.authors.find(a => a.id === state.filters.author)];
         if (state.filters.book !== "") {
@@ -102,16 +90,9 @@ export default function Authors() {
         </form>    
     )
 
-<<<<<<< Updated upstream
     // ------------------------- Delete Author -------------------------------
     async function deleteAuthor() {
         if (authors.length === 1) dispatch({type: 'clearFilters'});
-=======
-    // -------------------- Edit Author -----------------------------
-
-    // -------------------- Delete Author -----------------------------
-    async function deleteAuthor() {
->>>>>>> Stashed changes
         const deleted = await axios.delete(`/api/${currentUser.uid}/authors/${selectedItem}`); 
         dispatch({type: 'deleteAuthor', payload: deleted.data[0]});
         setDelModalShow(false);
@@ -130,11 +111,7 @@ export default function Authors() {
         </>
     )
 
-<<<<<<< Updated upstream
-    // -------------------------- Auth component return -----------------------
-=======
     // ---------------------- Author component return -------------------------------------------
->>>>>>> Stashed changes
     return (
         <div className="authors filter-component">
             <h3>Authors ({(authors.length) || 0})</h3>
