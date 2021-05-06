@@ -120,6 +120,13 @@ const addHighlight = async (request, response) => {
         user_id: request.params.user_id
     }
     const added = await db('Highlights').insert(newHighlight).returning('*');
+    const highlight_id = added[0].id;
+    for (const tag of request.body.tags) {
+        await db('highlights_tags').insert({
+            highlight_id,
+            tag_id: tag.id
+        });
+    }
     response.send(added);
 }
 
@@ -165,6 +172,17 @@ const editBook = async (request, response) => {
 }
 
 const editHighlight = async (request, response) => {
+    // for now delete all existing tags and then replace them.
+    await db("highlights_tags").where({
+        highlight_id: request.params.id
+    }).del();
+    // add all the highlight_tags
+    for (const tag of request.body.tags) {
+        await db('highlights_tags').insert({
+            highlight_id: request.params.id,
+            tag_id: tag.id
+        });
+    }
     const editedHighlight = {
         highlight: request.body.highlight,
         reviewed: request.body.reviewed,
@@ -197,6 +215,7 @@ const deleteAuthor = async (request, response) => {
         author_id: request.params.id,
         user_id: request.params.user_id 
     }).update({author_id: null}).returning('*');
+    console.log(nulledBooks);
     const result = await db('Authors').where({
         id: request.params.id,
         user_id: request.params.user_id
