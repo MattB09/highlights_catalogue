@@ -22,26 +22,12 @@ export default function Highlights() {
     const [editHighlightVal, setEditHighlightVal] = useState({highlight: "", book_id:"", book:""});
     const [searchVal, setSearchVal] = useState("");
 
-    // ------------------ UseEffect----------------------------------------
+    // ------------------ UseEffects ----------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
         let filtered = filterHighlights(state.data);
         setFilteredHighlights(filtered);
     }, [state.filters, state.data.highlights, addedTags]);
-
-    // ------------------ Filtering --------------------------------------
-    function filterHighlights(data) { 
-        if (state.filters.author !== "") return data.highlights.filter(h => h.book.author_id === state.filters.author);
-        if (state.filters.book !== "") return data.highlights.filter(h => h.book.id === state.filters.book);
-        if (state.filters.tag !== "") {
-            let hWithTag = data.highlights.filter(h => {
-                if (h.tags.find(t => t.id === state.filters.tag)) return true;
-                return false;
-            });
-            return hWithTag;
-        }
-        return data.highlights; 
-    }
 
     useEffect(() => {
         if (filteredHighlights.length === 0) {
@@ -58,6 +44,20 @@ export default function Highlights() {
         let searched = filteredHighlights.filter(highlight => highlight.highlight.includes(searchVal));
         setHighlights(searched);
     }, [searchVal, filteredHighlights])
+
+    // ------------------ Filtering --------------------------------------
+    function filterHighlights(data) { 
+        if (state.filters.author !== "") return data.highlights.filter(h => h.book.author_id === state.filters.author);
+        if (state.filters.book !== "") return data.highlights.filter(h => h.book.id === state.filters.book);
+        if (state.filters.tag !== "") {
+            let hWithTag = data.highlights.filter(h => {
+                if (h.tags.find(t => t.id === state.filters.tag)) return true;
+                return false;
+            });
+            return hWithTag;
+        }
+        return data.highlights; 
+    }
 
     // ------------------ Add highlight --------------------------------------
     const highlightForm = (
@@ -204,8 +204,11 @@ export default function Highlights() {
     // ------------------ Highlight Component Return ---------------------------------
     return (
         <div id="highlights">
-            <label for="search" className=''>Search:</label>
-            <input id="search" type="text" value={searchVal} onChange={(e) => setSearchVal(e.target.value)}/>
+            <div className='search-container'>
+                <label for="search" className='search-label'>Search:</label>
+                <input id="search" type="text" className='search-input'
+                    value={searchVal} onChange={(e) => setSearchVal(e.target.value)}/>
+            </div>
             <h3>Highlights ({highlights.length || 0})</h3>
             <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add
