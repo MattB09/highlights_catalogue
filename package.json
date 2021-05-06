@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
+  "description": "A web app that lets you manage and catalogue your highlighted passages from different books you've read.",
   "scripts": {
     "start": "node server",
     "hack": "react-scripts start",
@@ -29,7 +33,6 @@
       "last 1 safari version"
     ]
   },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
