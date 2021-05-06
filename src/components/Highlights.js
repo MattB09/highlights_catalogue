@@ -11,6 +11,7 @@ export default function Highlights() {
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context)
 
+    const [filteredHighlights, setFilteredHighlights] = useState([]);
     const [highlights, setHighlights] = useState([]);
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
@@ -19,12 +20,30 @@ export default function Highlights() {
     const [addedTags, setAddedTags] = useState([]);
     const [tagSelect, setTagSelect] = useState("");
     const [editHighlightVal, setEditHighlightVal] = useState({highlight: "", book_id:"", book:""});
+    const [searchVal, setSearchVal] = useState("");
 
-    // ------------------ UseEffect----------------------------------------
+    // ------------------ UseEffects ----------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
-        setHighlights(filterHighlights(state.data))
+        let filtered = filterHighlights(state.data);
+        setFilteredHighlights(filtered);
     }, [state.filters, state.data.highlights, addedTags]);
+
+    useEffect(() => {
+        if (filteredHighlights.length === 0) {
+            setHighlights([]);
+            return
+        }
+
+        if (searchVal === "") {
+            setHighlights(filteredHighlights);
+            return;
+        }
+        
+        // filter on searched string
+        let searched = filteredHighlights.filter(highlight => highlight.highlight.includes(searchVal));
+        setHighlights(searched);
+    }, [searchVal, filteredHighlights])
 
     // ------------------ Filtering --------------------------------------
     function filterHighlights(data) { 
@@ -185,6 +204,11 @@ export default function Highlights() {
     // ------------------ Highlight Component Return ---------------------------------
     return (
         <div id="highlights">
+            <div className='search-container'>
+                <label for="search" className='search-label'>Search:</label>
+                <input id="search" type="text" className='search-input'
+                    value={searchVal} onChange={(e) => setSearchVal(e.target.value)}/>
+            </div>
             <h3>Highlights ({highlights.length || 0})</h3>
             <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add

@@ -150,6 +150,21 @@ pre {
   object-fit: cover;
 }
 
+.search-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.search-label {
+  font-size: 20px;
+  margin-right: 5px;
+  margin-bottom: 0px;
+}
+
+.search-input {
+  flex-grow: 1;
+}
+
 /* ---------------- form general ----------------- */
 
 .form-label {
