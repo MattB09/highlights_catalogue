@@ -41,7 +41,7 @@ export default function Highlights() {
         }
         
         // filter on searched string
-        let searched = filteredHighlights.filter(highlight => highlight.highlight.includes(searchVal));
+        let searched = filteredHighlights.filter(highlight => highlight.highlight.toLowerCase().includes(searchVal.toLowerCase()));
         setHighlights(searched);
     }, [searchVal, filteredHighlights])
 
