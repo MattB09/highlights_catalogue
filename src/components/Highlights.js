@@ -121,6 +121,7 @@ export default function Highlights() {
     
     function editHighlightClicked(hId) {
         setEditModalShow(true);
+        let selected = state.data.highlights.find(highlight => highlight.id === hId);
         setSelectedItem(Number(hId))
         setEditHighlightVal({...selected, book_id: selected.book.id});
         setAddedTags(selected.tags);
