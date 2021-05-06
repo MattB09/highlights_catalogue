@@ -6,11 +6,13 @@ const reducer = (state, action) => {
     // set initial context reducer
     case 'setContext':
       return { ...state, data: action.payload };
+   
     // Filter reducers
     case 'clearFilters':
       return {...state, filters: {author: "", book: "", tag: ""}}
     case 'setFilter':
       return {...state, filters: action.payload}
+    
     // Author reducers
     case 'addAuthor':
       let authorsCopy = [...state.data.authors];
@@ -35,6 +37,7 @@ const reducer = (state, action) => {
       let index = authorsCopy2.findIndex((auth) => auth.id === action.payload.id);
       authorsCopy2.splice(index, 1);
       return { ...state, data: { ...state.data, authors: authorsCopy2, books: bCopy}}
+    
     // Books reducers
     case 'addBook':
       let booksCopy = [...state.data.books];
@@ -56,6 +59,7 @@ const reducer = (state, action) => {
       let bIndex = booksCopy1.findIndex((book) => book.id === action.payload.id);
       booksCopy1.splice(bIndex, 1);
       return { ...state, data: {...state.data, highlights: hCopy, books: booksCopy1}};
+    
     // tags reducers
     case 'addTag':
       let tagsCopy = [...state.data.tags];
@@ -88,6 +92,8 @@ const reducer = (state, action) => {
       let tIndex = tagsCopy1.findIndex((tag) => tag.id === action.payload.id);
       tagsCopy1.splice(tIndex, 1);
       return { ...state, data: {...state.data, highlights: hCopy1, tags: tagsCopy1}};
+    
+    // Highlights reducers
     case 'addHighlight':
       let highlightsCopy = [...state.data.highlights];
       addSorted(action.payload, highlightsCopy, "highlight");
