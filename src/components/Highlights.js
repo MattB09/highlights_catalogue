@@ -11,6 +11,7 @@ export default function Highlights() {
     const { currentUser } = useContext(AuthContext);
     const { state, dispatch } = useContext(Context)
 
+    const [filteredHighlights, setFilteredHighlights] = useState([]);
     const [highlights, setHighlights] = useState([]);
     const [addModalShow, setAddModalShow] = useState(false);
     const [delModalShow, setDelModalShow] = useState(false);
@@ -19,11 +20,13 @@ export default function Highlights() {
     const [addedTags, setAddedTags] = useState([]);
     const [tagSelect, setTagSelect] = useState("");
     const [editHighlightVal, setEditHighlightVal] = useState({highlight: "", book_id:"", book:""});
+    const [searchVal, setSearchVal] = useState("");
 
     // ------------------ UseEffect----------------------------------------
     useEffect(() => {
         if (state.data === undefined) return;
-        setHighlights(filterHighlights(state.data))
+        let filtered = filterHighlights(state.data);
+        setFilteredHighlights(filtered);
     }, [state.filters, state.data.highlights, addedTags]);
 
     // ------------------ Filtering --------------------------------------
@@ -39,6 +42,22 @@ export default function Highlights() {
         }
         return data.highlights; 
     }
+
+    useEffect(() => {
+        if (filteredHighlights.length === 0) {
+            setHighlights([]);
+            return
+        }
+
+        if (searchVal === "") {
+            setHighlights(filteredHighlights);
+            return;
+        }
+        
+        // filter on searched string
+        let searched = filteredHighlights.filter(highlight => highlight.highlight.includes(searchVal));
+        setHighlights(searched);
+    }, [searchVal, filteredHighlights])
 
     // ------------------ Add highlight --------------------------------------
     const highlightForm = (
@@ -185,6 +204,8 @@ export default function Highlights() {
     // ------------------ Highlight Component Return ---------------------------------
     return (
         <div id="highlights">
+            <label for="search" className=''>Search:</label>
+            <input id="search" type="text" value={searchVal} onChange={(e) => setSearchVal(e.target.value)}/>
             <h3>Highlights ({highlights.length || 0})</h3>
             <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
                 Add
