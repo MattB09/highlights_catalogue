@@ -18,7 +18,7 @@ h3 {
   background-color: #8E8FA4;
   color: #210808;
   font-size: 13px;
-  border-radius: 5%;
+  border-radius: 5px;
 }
 
 #filters-container {
@@ -314,4 +314,56 @@ pre {
   grid-area: b-save;
   justify-self: end;
   align-self: start;
+}
+
+ /* --------------  Landing page styling ----------------*/
+.form-container {
+  max-width: 750px;
+  width: auto;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+}
+
+.landing-form-container {
+  margin: 2%;
+  border: 0.5px solid rgba(164, 209, 159, 0.7);
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #8E8FA4;
+}
+
+.landing-form {
+  display: grid;
+  grid-template-columns: 300px;
+  grid-template-rows: auto auto auto auto auto;
+  grid-template-areas: 
+  "email-label" 
+  "email-input"
+  "password-label" 
+  "password-input"
+  "action-button";
+}
+
+.landing-label {
+  align-self: end;
+  margin-bottom: 0px;
+  margin-top: 10px;
+}
+
+.action-button {
+  margin-top: 10px;
+  background-color: #E7ECEE;
+  font-size: 1rem;
+}
+
+.welcome {
+  text-align: center;
+}
+
+.about-text {
+  font-size: 1.1rem;
 }
