@@ -332,7 +332,8 @@ pre {
   border: 0.5px solid rgba(164, 209, 159, 0.7);
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
   padding: 20px;
-  border-radius: 3px;
+  border-radius: 5px;
+  background-color: #8E8FA4;
 }
 
 .landing-form {
@@ -355,4 +356,14 @@ pre {
 
 .action-button {
   margin-top: 10px;
+  background-color: #E7ECEE;
+  font-size: 1rem;
+}
+
+.welcome {
+  text-align: center;
+}
+
+.about-text {
+  font-size: 1.1rem;
 }

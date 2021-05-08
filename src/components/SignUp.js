@@ -20,10 +20,10 @@ function SignUp({ history }) {
         <div className="landing-form-container">
             <h2>Sign Up</h2>
             <form onSubmit={handleSignUp} className='landing-form'>
-                <label for="signup-email" className="landing-label email-label">Email</label>
+                <label for="signup-email" className="landing-label email-label">Email:</label>
                 <input id="signup-email" name="email" type="email" placeholder="Email" />
 
-                <label for="signup-password" className="landing-label password-label">Password</label>
+                <label for="signup-password" className="landing-label password-label">Password:</label>
                 <input id="signup-password" name="password" type="password" placeholder="Password" />
                 
                 <button type="submit" className="action-button btn">Sign Up</button>
