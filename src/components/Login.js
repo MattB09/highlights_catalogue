@@ -24,18 +24,16 @@ function Login({ history }) {
     }
 
     return (
-        <div>
-        <h1>Log In</h1>
-        <form onSubmit={handleLogin}>
-            <label>
-                Email
-                <input name="email" type="email" placeholder="Email" />
-            </label>
-            <label>
-                Password
-                <input name="password" type="password" placeholder="Password" />
-            </label>
-            <button type="submit">Log in</button>
+        <div className="landing-form-container">
+        <h2>Log In</h2>
+        <form onSubmit={handleLogin} className="landing-form">
+            <label for="login-email" className="landing-label email-label">Email:</label>
+            <input id="login-email" name="email" type="email" placeholder="Email" />
+            
+            <label for="login-password" className="landing-label password-label">Password:</label>
+            <input id="login-password" name="password" type="password" placeholder="Password" />
+
+            <button type="submit" className="action-button btn">Log in</button>
         </form>
     </div>
     )
