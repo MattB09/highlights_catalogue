@@ -144,7 +144,7 @@ export default function Authors() {
             <ModalForm
                 show={delModalShow}
                 onHide={() => setDelModalShow(false)}
-                title="Delete Author"
+                title="Edit Author"
                 form={areYouSure}
                 size="sm"
             /> 
