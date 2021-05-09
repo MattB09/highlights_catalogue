@@ -4,8 +4,11 @@ MyLights is a web app that lets you manage and catalogue your highlighted passag
 
 Users each have their own account.
 
+Landing page
+<img src="/img/LandingPage.PNG" alt="Landing page" />
+
 Single page app
-<img src="/img/Screenshot_Full.PNG" alt="Screenshot of whole page" />
+<img src="/img/" alt="Screenshot of whole page" />
 
 Filter on author, book, or tag
 <img src="/img/Filter.PNG" alt="Filtering" />
