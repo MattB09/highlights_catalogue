@@ -35,7 +35,7 @@ export default function Books() {
         if (state.filters.tag !== "") {
             let bookIds = data.highlights.filter(h => h.tags.find(t => t.id === state.filters.tag))
                 .map(h => h.book.id);
-            if (bookIds.length) return [data.books.filter(b => bookIds.includes(b.id))];
+            if (bookIds.length) return data.books.filter(b => bookIds.includes(b.id));
             else return [];
         }
         return data.books; 
