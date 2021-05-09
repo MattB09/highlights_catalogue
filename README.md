@@ -1,6 +1,6 @@
 [link to site](https://highlights-catalogue.herokuapp.com/) <img src="./src/img/ML - Logo.png" alt="Mylights Logo" />
 # MyLights 
-MyLights is a web app that lets you manage and catalogue your highlighted passages from different books you've read. You can categorize each highlight with zero or many tags and then filter the highlights based on author, book, or tag. You can create any tag you like.
+MyLights is a web app that lets you manage and catalogue your highlighted passages from different books you've read. You can categorize each highlight with zero or many tags and then filter the highlights based on author, book, or tag. You can create any tag you like. You can also search your highlights using the search bar.
 
 Users each have their own account.
 
@@ -18,10 +18,9 @@ Visit the url: https://highlights-catalogue.herokuapp.com/ and sign up with emai
 1. Log into your kindle account at https://read.amazon.com/notebook. From there you can see your highlights and notes by book. 
 1. In your kindle, go to a book and open the menu. There's an option to send yourself the highlights by email. The email will contain both pdf and csv files with your highlights.
 
-From there, I like to add them to the app one by one, which is my way of reviewing the book and reflecting on what I've read.
+I like to add the highlights to the app one by one, which is my way of reviewing the book and reflecting on what I've read.
 
 ## Upcoming features
-- Search for highlights
 - Upload kindle csv file to bulk upload highlights.
 - Login with google account
 
