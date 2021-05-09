@@ -21,6 +21,16 @@ h3 {
   border-radius: 5px;
 }
 
+.icon-btn {
+  color: #05404C; 
+  background-color: #E7ECEE;
+  font-size: 20px;
+  border-radius: 5px;
+  border-color: #E7ECEE;
+  display: flex;
+  padding: 4px;
+}
+
 #filters-container {
   display: flex;
   flex-wrap: wrap;
@@ -119,17 +129,21 @@ pre {
 }
 
 .small-button {
-  font-size: 9px;
-  width: 20px;
-  height: 20px;
-  padding: 0px;
-  margin: 1px 2px;
+  font-size: 13px;
+  padding: 2px;
+  margin: 1px 1px;
   flex-grow: 0;
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .del-button {
   margin-right: 7px;
+}
+
+.small-icon {
+  vertical-align: middle;
+  margin: 0px;
 }
 
 .filter-component li:hover {

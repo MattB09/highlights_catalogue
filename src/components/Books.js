@@ -4,6 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
+import { FaPlus, FaTrashAlt, FaEdit } from "react-icons/fa";
 
 export default function Books() {
     // ---------------------- useStates and contexts ---------------------------
@@ -163,8 +164,8 @@ export default function Books() {
     return (
         <div className="books filter-component">
             <h3>Books ({books.length || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
-                Add
+            <Button className="add-button icon-btn" variant="primary" aria-label="Add book" onClick={() => setAddModalShow(true)}>
+                <FaPlus />
             </Button>
             <ModalForm
                 show={addModalShow}
@@ -178,8 +179,12 @@ export default function Books() {
                     books.length > 0 && books.map(b => {
                         return (
                             <li className="filter-item" key={b.id}>
-                                <Button className="small-button" variant="warning" onClick={() => editClicked(b.id)}>Edit</Button>
-                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(b.id)}>Del</Button>
+                                <Button className="small-button icon-btn" variant="warning" onClick={() => editClicked(b.id)} aria-label="Edit book">
+                                    <FaEdit className="small-icon" />
+                                </Button>
+                                <Button className="small-button del-button icon-btn" variant="danger" onClick={() => delClicked(b.id)} aria-label="Delete book">
+                                    <FaTrashAlt className="small-icon"/>
+                                </Button>
                                 <div className="filter-text" onClick={() => setBookFilter(b.id)}>
                                     <span className="book-title">{b.title}</span>
                                     {/* /* by <span className="book-author">{b.name || "unspecified"}</span> */}

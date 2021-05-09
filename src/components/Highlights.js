@@ -5,6 +5,7 @@ import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
 import { addSorted } from '../utils/helpers';
+import { FaPlus, FaTrashAlt, FaEdit } from "react-icons/fa";
 
 export default function Highlights() {
     // ------------------ useStates  and contexts----------------------------------------
@@ -73,8 +74,10 @@ export default function Highlights() {
                         return <option key={t.id} value={t.id}>{t.tag}</option>
                 })}
             </select>
-            { addedTags.length > 0 && <p className="t-message">Click a tag to remove it</p> }
-            <Button variant="primary" className="t-add" onClick={addTagClicked}>Add Tag</Button>
+            { addedTags.length > 0 && <p className="t-message">Click tag to remove</p> }
+            <Button variant="primary" className="t-add icon-btn" aria-label="Add tag to highlight" onClick={addTagClicked}>
+                <FaPlus />
+            </Button>
             <div className="t-display-container">
                 {addedTags.length > 0 && addedTags.map(t => (
                     <div className="tag-list" onClick={()=>setAddedTags(addedTags.filter(tag => tag.id !== t.id))}>{t.tag}</div>    
@@ -160,8 +163,10 @@ export default function Highlights() {
                         return <option key={t.id} value={t.id}>{t.tag}</option>
                 })}
             </select>
-            { addedTags.length > 0 && <p className="t-message">Click a tag to remove it</p> }
-            <Button variant="primary" className="t-add" onClick={addTagClicked}>Add Tag</Button>
+            { addedTags.length > 0 && <p className="t-message">Click tag to remove</p> }
+            <Button variant="primary" className="t-add icon-btn" aria-label="Add tag to highlight" onClick={addTagClicked}>
+                <FaPlus /> 
+            </Button>
             <div className="t-display-container">
                 {addedTags.length > 0 && addedTags.map(t => (
                     <div className="tag-list" onClick={()=>setAddedTags(addedTags.filter(tag => tag.id !== t.id))}>{t.tag}</div>    
@@ -210,8 +215,8 @@ export default function Highlights() {
                     value={searchVal} onChange={(e) => setSearchVal(e.target.value)}/>
             </div>
             <h3>Highlights ({highlights.length || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
-                Add
+            <Button className="add-button icon-btn" variant="primary" aria-label="Add highlight" onClick={() => setAddModalShow(true)}>
+                <FaPlus /> 
             </Button>
             <ModalForm
                 show={addModalShow}
@@ -228,8 +233,12 @@ export default function Highlights() {
                 {
                     highlights.length > 0 && highlights.map(h => {
                         return (<div className="highlight-item" key={h.id}>
-                            <Button variant="warning" className="small-button" onClick={()=> editHighlightClicked(h.id)}>Edit</Button>
-                            <Button className="small-button del-button" variant="danger" onClick={() => delClicked(h.id)}>Del</Button>
+                            <Button variant="warning" className="small-button icon-btn" aria-label="Edit highlight" onClick={()=> editHighlightClicked(h.id)}>
+                                <FaEdit className="small-icon" />
+                            </Button>
+                            <Button className="small-button del-button icon-btn" variant="danger" aria-label="Delete highlight" onClick={() => delClicked(h.id)}>
+                                <FaTrashAlt className="small-icon" />
+                            </Button>
                             <li 
                             key={h.id}
                             value={h.id}

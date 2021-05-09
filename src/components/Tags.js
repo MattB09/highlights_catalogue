@@ -4,6 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
+import { FaPlus, FaTrashAlt, FaEdit } from "react-icons/fa";
 
 export default function Tags() {
     // ------------------------- useState and context ----------------------------
@@ -126,8 +127,8 @@ export default function Tags() {
     return (
         <div className="tags filter-component">
             <h3>Tags ({tags.length || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
-                Add
+            <Button className="add-button icon-btn" variant="primary" aria-label="Add tag" onClick={() => setAddModalShow(true)}>
+                <FaPlus />
             </Button>
             <ModalForm
                 show={addModalShow}
@@ -141,8 +142,12 @@ export default function Tags() {
                     tags.length > 0 && tags.map(t => {
                         return (
                             <li className="filter-item" key={t.id}>
-                                <Button className="small-button" variant="warning" onClick={() => editClicked(t.id)}>Edit</Button>
-                                <Button className="small-button del-button" variant="danger" onClick={() => delClicked(t.id)}>Del</Button>
+                                <Button className="small-button icon-btn" variant="warning" aria-label="Edit tag" onClick={() => editClicked(t.id)}>
+                                    <FaEdit className="small-icon" />
+                                </Button>
+                                <Button className="small-button del-button icon-btn" variant="danger" aria-label="Delete tag" onClick={() => delClicked(t.id)}>
+                                    <FaTrashAlt className="small-icon"/>
+                                </Button>
                                 <div className="filter-text" onClick={()=> setTagFilter(t.id)}>{t.tag}</div> 
                             </li>
                         );

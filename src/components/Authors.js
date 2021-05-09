@@ -4,6 +4,7 @@ import ModalForm from './ModalForm';
 import { AuthContext } from '../Auth';
 import { Context } from '../App';
 import axios from "axios";
+import { FaPlus, FaTrashAlt, FaEdit } from "react-icons/fa";
 
 export default function Authors() {
     // ------------------------- useStates and useContext ------------------------
@@ -115,8 +116,8 @@ export default function Authors() {
     return (
         <div className="authors filter-component">
             <h3>Authors ({(authors.length) || 0})</h3>
-            <Button className="add-button" variant="primary" onClick={() => setAddModalShow(true)}>
-                Add 
+            <Button className="add-button icon-btn" variant="primary" aria-label="Add author" onClick={() => setAddModalShow(true)}>
+                <FaPlus /> 
             </Button>
             <ModalForm
                 show={addModalShow}
@@ -129,8 +130,12 @@ export default function Authors() {
                 {
                 authors.length > 0 && authors.map(a => {
                     return a ? <li className="filter-item" key={a.id}>
-                        <Button className="small-button" variant="warning" onClick={() => editClicked(a.id)}>Edit</Button>
-                        <Button className="small-button del-button" variant="danger" onClick={() => delClicked(a.id)}>Del</Button>
+                        <Button className="small-button icon-btn" variant="warning" onClick={() => editClicked(a.id)} aria-label="Edit author">
+                            <FaEdit className="small-icon" />
+                        </Button>
+                        <Button className="small-button del-button icon-btn" variant="danger" onClick={() => delClicked(a.id)} aria-label="Delete author">
+                            <FaTrashAlt className="small-icon"/>
+                        </Button>
                         <div className="filter-text" onClick={() => setAuthFilter(a.id)}>{a.name}</div>
                     </li> : null;
                 })
