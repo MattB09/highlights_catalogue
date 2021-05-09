@@ -35,7 +35,7 @@ export default function Authors() {
         if (state.filters.tag !== "") {
             let authIds = data.highlights.filter(h => h.tags.find(t => t.id === state.filters.tag))
                 .map(h => h.book.author_id);
-            if (authIds.length) return [data.authors.find(a => authIds.includes(a.id))];
+            if (authIds.length) return [data.authors.filter(a => authIds.includes(a.id))];
             return [];
         }
         return data.authors; 
