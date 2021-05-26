@@ -39,15 +39,37 @@ const renderWithContext = (comp) => {
 }
 
 describe('Home component render tests', () => {  
-  test('logo renders', () => {
+  function renderHome() {
     renderWithContext(<Home />);
+  }
+
+  test('logo renders', () => {
+    renderHome();
     const logo = screen.getByAltText(/Mylights logo/i);
     expect(logo).toBeInTheDocument();
   });
 
   test('logged in user text renders', () => {
-    renderWithContext(<Home />);
+    renderHome();
     const loggedInText = screen.getByText(`logged in as ${TESTEMAIL.split('@')[0]}`, {exact: false});
     expect(loggedInText).toBeInTheDocument();
+  });
+
+  test('Logout button renders', () => {
+    renderHome();
+    const logoutBtn = screen.getByText(/Log out/i);
+    expect(logoutBtn).toBeInTheDocument();
+  })
+
+  test('filters titles render', () => {
+    renderHome();
+    expect(screen.getByText(/Authors/)).toBeInTheDocument();
+    expect(screen.getByText(/Books/)).toBeInTheDocument();
+    expect(screen.getByText(/Tags/)).toBeInTheDocument();
+  });
+
+  test('Highlights section renders', () => {
+    renderHome();
+    expect(screen.getByText(/Highlights/)).toBeInTheDocument();
   });
 });
